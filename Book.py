@@ -20,3 +20,9 @@ class Book:
 
     def getLocation(self) -> str:
         return self.location
+
+
+
+
+
+
