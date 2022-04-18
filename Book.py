@@ -1,3 +1,5 @@
+
+
 class Book:
     def __init__(self, name: str, author: str, isbn: int, rentaling: bool, location: str):
         self.name: str = name
