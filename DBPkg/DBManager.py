@@ -4,9 +4,15 @@ import pandas as pd
 class _DBManager:
 
     @staticmethod
-    def _selectDB(db_path: str, keyword: str) -> list:
+    def _selectDB(db_path: str, keyword=None, _id=None) -> list:
         df = pd.read_csv(db_path)
         rows = df.to_numpy().tolist()
+        if _id:
+            _id_row: list = []
+            for row in rows:
+                if _id == row[0]:
+                    _id_row = row
+            return _id_row
         if keyword:
             keyword_rows = []
             for row in rows:
@@ -19,13 +25,14 @@ class _DBManager:
         return rows
 
     @staticmethod
-    def _insertDB(data: object, db_path: str, _id: int):
+    def _insertDB(data: object, db_path: str, _id: int) -> int:
         df = pd.read_csv(db_path, index_col='id')
         row = []
         for k, v in data.__dict__.items():
             row.append(v)
         df.loc[_id] = row
         df.to_csv(db_path)
+        return _id
 
     @staticmethod
     def _updateDB(data: object, db_path: str, _id: int):

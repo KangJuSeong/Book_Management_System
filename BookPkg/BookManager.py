@@ -10,15 +10,19 @@ class BookManager(_DBManager, _Book):
         self.DB_PATH: str = 'DBPkg/csv/BookDB.csv'
         self.BID_PATH: str = 'DBPkg/txt/BookID.txt'
 
+    def getBook(self, bid: int) -> list:
+        return _DBManager._selectDB(db_path=self.DB_PATH, _id=bid)
+
     def listBook(self, keyword=None) -> list:
         rows: list = _DBManager._selectDB(db_path=self.DB_PATH, keyword=keyword)
         return rows
 
-    def createBook(self, name: str, author: str, isbn: int, rentaling: bool, location: str):
+    def createBook(self, name: str, author: str, isbn: int, rentaling: bool, location: str) -> int:
         self.book = _Book(name, author, isbn, rentaling, location)
         bid: int = getID(self.BID_PATH)
         upID(self.BID_PATH)
-        _DBManager._insertDB(data=self.book, db_path=self.DB_PATH, _id=bid)
+        bid = _DBManager._insertDB(data=self.book, db_path=self.DB_PATH, _id=bid)
+        return bid
 
     def updateBook(self, name: str, author: str, isbn: int, rentaling: bool, location: str, bid: int) -> bool:
         self.book = _Book(name, author, isbn, rentaling, location)

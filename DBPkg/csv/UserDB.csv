@@ -1,2 +1,3 @@
 id, name, address, phone, manager, email, password
-0,강주성,성북구 솔샘로 4길,01033775284,True,wntjd3686@gmail.com,123456789
+0,강주성,성북구 솔샘로 4길,1033775284,True,test86@gmail.com,123456789
+1,강주성,성북구 솔샘로 4길,010-3377-5284,True,wntjd3686@gmail.com,123456789
