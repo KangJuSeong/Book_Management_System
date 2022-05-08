@@ -25,11 +25,12 @@ class _DBManager:
         return rows
 
     @staticmethod
-    def _insertDB(data: object, db_path: str, _id: int) -> int:
+    def _insertDB(data: object, db_path: str) -> int:
         df = pd.read_csv(db_path, index_col='id')
         row = []
         for k, v in data.__dict__.items():
             row.append(v)
+        _id = row.pop(0)
         df.loc[_id] = row
         df.to_csv(db_path)
         return _id
@@ -47,6 +48,7 @@ class _DBManager:
             row = []
             for k, v in data.__dict__.items():
                 row.append(v)
+            row.pop(0)
             df.loc[_id] = row
             df.to_csv(db_path)
             return True

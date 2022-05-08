@@ -1,12 +1,16 @@
 class _User:
 
-    def __init__(self, name: str, address: str, phone: str, manager: bool, email: str, password: str):
+    def __init__(self, uid: int, name: str, address: str, phone: str, manager: bool, email: str, password: str):
+        self.__uid = uid
         self.__name = name
         self.__address = address
         self.__phone = phone
         self.__manager = manager
         self.__email = email
         self.__password = password
+
+    def getUid(self) -> int:
+        return self.__uid
 
     def getName(self) -> str:
         return self.__name
