@@ -1,19 +1,20 @@
 from .Rental import _Rental
 from DBPkg.DBManager import _DBManager
-from BookPkg.BookDBManager import BookManager
+from BookPkg.BookController import BookController
+from BookPkg.BookDBManager import BookDBManager
 from util.IDManager import getID, upID
 import time
 
 
-class RentalManager(_DBManager, _Rental):
+class RentalDBManager(_DBManager, _Rental):
     
     def __init__(self):
-        self.rental: _Rental = None # type: ignore
         self.DB_PATH: str = 'DBPkg/csv/RentalDB.csv'
         self.RID_PATH: str = 'DBPkg/txt/RentalID.txt'
     
-    def getRental(self, rid: int, attr=None) -> list:
-        return _DBManager._selectDB(db_path=self.DB_PATH, _id=rid)
+    def getRental(self, rid: int) -> _Rental:
+        data = _DBManager._selectDB(db_path=self.DB_PATH, _id=rid)
+        return _Rental(data[0], data[1], data[2], data[3], data[4])
     
     def listRental(self, keyword=None) -> list:
         return _DBManager._selectDB(db_path=self.DB_PATH, keyword=keyword)
@@ -22,14 +23,15 @@ class RentalManager(_DBManager, _Rental):
         rental_date: str = time.strftime('%Y-%m-%d-%H:%M', time.localtime(time.time()))
         rid: int = getID(self.RID_PATH)
         upID(self.RID_PATH)
-        self.rental = _Rental(rid, bid, uid, True, rental_date)
-        rid = _DBManager._insertDB(data=self.rental, db_path=self.DB_PATH)
-        bm = BookManager()
-        bm.rentalBook(bid)
+        rid = _DBManager._insertDB(data=_Rental(rid, bid, uid, True, rental_date), db_path=self.DB_PATH)
+        bc = BookController(BookDBManager().getBook(bid))
+        bc.rentalBook()
+        BookDBManager().updateBook(bc.getBook(), bc.getBookAttr()['bid'])
         return rid
     
     def deleteRental(self, rid: int) -> bool:
-        bid = self.getRental(rid)[1]
-        bm = BookManager()
-        bm.returnBook(bid)
+        bid = self.getRental(rid).getBid()
+        bc = BookController(BookDBManager().getBook(bid))
+        bc.returnBook()
+        BookDBManager().updateBook(bc.getBook(), bc.getBookAttr()['bid'])
         return _DBManager._deleteDB(db_path=self.DB_PATH, _id=rid)
