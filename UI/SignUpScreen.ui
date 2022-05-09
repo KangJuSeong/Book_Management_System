@@ -37,7 +37,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="id_edit">
+  <widget class="QLineEdit" name="email_edit">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -87,7 +87,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QRadioButton" name="manager_raido_btn">
+  <widget class="QRadioButton" name="manager_radio_btn">
    <property name="geometry">
     <rect>
      <x>620</x>

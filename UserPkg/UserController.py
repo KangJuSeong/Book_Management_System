@@ -22,12 +22,13 @@ class UserController(_User):
         user: list = UserDBManager().listUser(keyword=email)
         if user:
             db_password = user[0][-1]
-            if password == db_password:
-                print('Login Success')
-                return user[0][0]
-            else:
-                print('No Match Password')
-                return False
-        else:
-            print('Not Exist Email')
-            return False
+            if password == db_password: return user[0][0]
+            else: return False
+        else: return False
+
+    @staticmethod
+    def getManagerCode():
+        with open("DBPkg/txt/ManagerCode.txt") as f:
+            code = f.readline()
+            return code
+    

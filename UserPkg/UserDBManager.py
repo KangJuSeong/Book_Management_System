@@ -16,11 +16,10 @@ class UserDBManager(_DBManager, _User):
     def listUser(self, keyword=None) -> list:
         return _DBManager._selectDB(db_path=self.DB_PATH, keyword=keyword)
     
-    def createUser(self, name: str, address: str, phone: str, manager: bool, email: str, password: str) -> int:
+    def createUser(self, name: str, address: str, phone: str, manager: bool, email: str, password: str):
         duplicate_email: list = self.listUser(keyword=email)
-        if duplicate_email:
-            print("Duplicate User Email")
-            return False
+        if duplicate_email: return "Duplicate" 
+        if not '@' in email: return "NotEmailFormat"
         uid: int = getID(self.UID_PATH)
         upID(self.UID_PATH)
         self.user = _User(uid, name, address, phone, manager, email, password)

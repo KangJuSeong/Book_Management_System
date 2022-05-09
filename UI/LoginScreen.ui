@@ -82,7 +82,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="id_edit">
+  <widget class="QLineEdit" name="email_edit">
    <property name="geometry">
     <rect>
      <x>280</x>
