@@ -29,4 +29,3 @@ class _User:
 
     def isManager(self) -> bool:
         return self.__manager
-

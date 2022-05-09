@@ -49,7 +49,7 @@ class _DBManager:
             for k, v in data.__dict__.items():
                 row.append(v)
             row.pop(0)
-            df.loc[_id] = row
+            df.loc[_id] = row  # type: ignore
             df.to_csv(db_path)
             return True
         else:

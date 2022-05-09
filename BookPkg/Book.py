@@ -6,7 +6,7 @@ class _Book:
         self.__isbn: int = isbn
         self.__rentaling: bool = rentaling
         self.__location: str = location
-        
+    
     def getBid(self) -> int:
         return self.__bid
 
@@ -24,3 +24,9 @@ class _Book:
 
     def getLocation(self) -> str:
         return self.__location
+    
+    def onRentaling(self) -> None:
+        self.__rentaling = True
+    
+    def offRentaling(self) -> None:
+        self.__rentaling = False
