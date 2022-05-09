@@ -19,6 +19,10 @@ class TestUserManager(unittest.TestCase):
         self.assertEqual(flag, uid)
         um.deleteUser(uid=uid)
         
+    def test_create_user(self):
+        um = UserDBManager()
+        uid = um.createUser('test', 'test', 'test', True, 'test@gmail.com', 'test')
+        
 
 if __name__ == '__main__':
     unittest.main()
