@@ -1,6 +1,2 @@
 id, name, address, phone, manager, email, password
 65,test,test,test,True,test@test,test
-66,fsdfsd,sdfsdf,fsdf,False,dfsdfsd@dffdfd,dfsd
-67,sdfsd,sdfsdf,fsdfsdf,False,sdfsdf@sdfsdf,sdfsdf
-68,fsdfsd,sdfsdf,fsdf,False,sdf@fdsfs,fsdfsd
-69,sdfsd,fsdfsd,fsdfsd,False,dfdfdfsd@dfsdfs,fsdf

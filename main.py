@@ -3,9 +3,13 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 from UserPkg.UserDBManager import UserDBManager
 from UserPkg.UserController import UserController
+
+from BookPkg.BookDBManager import BookDBManager
+from BookPkg.BookController import BookController
 
 
 def messageBox(window, text):
@@ -48,7 +52,7 @@ class LoginScreen(QDialog):
 
     def openSignUpWindow(self):
         widget.setCurrentIndex(widget.currentIndex()+1)
-        
+
     def openMainWindow(self):
         widget.close()
         mw = MainScreen(self.uid)
@@ -147,7 +151,39 @@ class MainScreen(QDialog):
         loadUi("/Users/gangjuseong/Desktop/study/3-1/객분설/OOAD_Project/UI/MainScreen.ui", self)
         self.uid = uid
         messageBox(self, '로그인 성공')
+        self.bm = BookDBManager()
+        self.user = UserController(UserDBManager().getUser(uid))
 
+        self.user_name_label.setText(f"{self.user.getUserAttr()['name']} 님, 안녕하세요!")
+        self.renderBookList()
+        self.book_list.itemClicked.connect(self.clickedItem)
+        self.search_btn.clicked.connect(self.searchBookList)
+    
+    def renderBookList(self, keyword=None):
+        self.book_list.clear()
+        if keyword: data = self.bm.listBook(keyword=keyword)
+        else: data = self.bm.listBook()
+        for i, v in enumerate(data):
+            self.book_list.addItem(f"{v[0]} {v[1]} - {v[2]}")
+     
+    def clickedItem(self):
+        bid = int(self.book_list.currentItem().text().split(' ')[0])
+        self.detailBookInfo(BookController(self.bm.getBook(bid)).getBookAttr())       
+    
+    def detailBookInfo(self, book_attr):
+        self.book_name_label.setText(f"책 이름 : {book_attr['name']}")
+        self.book_author_label.setText(f"저자 : {book_attr['author']}")
+        self.book_isbn_label.setText(f"ISBN : {book_attr['isbn']}")
+        if book_attr['rentaling']:
+            self.book_rental_label.setText(f"대여 상태 : 대여 중")
+        else:
+            self.book_rental_label.setText(f"대여 상태 : 대여 가능")
+        self.book_location_label.setText(f"위치 : {book_attr['location']}")
+        
+    def searchBookList(self):
+        keyword = self.search_edit.text()
+        self.renderBookList(keyword=keyword)
+            
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
