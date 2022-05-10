@@ -20,18 +20,21 @@ class RentalDBManager(_DBManager, _Rental):
         return _DBManager._selectDB(db_path=self.DB_PATH, keyword=keyword)
     
     def createRental(self, bid: int, uid: int) -> int:
-        rental_date: str = time.strftime('%Y-%m-%d-%H:%M', time.localtime(time.time()))
-        rid: int = getID(self.RID_PATH)
-        upID(self.RID_PATH)
-        rid = _DBManager._insertDB(data=_Rental(rid, bid, uid, True, rental_date), db_path=self.DB_PATH)
         bc = BookController(BookDBManager().getBook(bid))
-        bc.rentalBook()
-        BookDBManager().updateBook(bc.getBook(), bc.getBookAttr()['bid'])
-        return rid
+        if bc.rentalBook():
+            rental_date: str = time.strftime('%Y-%m-%d-%H:%M', time.localtime(time.time()))
+            rid: int = getID(self.RID_PATH)
+            upID(self.RID_PATH)
+            rid = _DBManager._insertDB(data=_Rental(rid, bid, uid, True, rental_date), db_path=self.DB_PATH)
+            BookDBManager().updateBook(bc.getBook(), bc.getBookAttr()['bid'])
+            return rid
+        else: return -1
     
     def deleteRental(self, rid: int) -> bool:
         bid = self.getRental(rid).getBid()
         bc = BookController(BookDBManager().getBook(bid))
-        bc.returnBook()
-        BookDBManager().updateBook(bc.getBook(), bc.getBookAttr()['bid'])
-        return _DBManager._deleteDB(db_path=self.DB_PATH, _id=rid)
+        if bc.returnBook():
+            BookDBManager().updateBook(bc.getBook(), bc.getBookAttr()['bid'])
+            return _DBManager._deleteDB(db_path=self.DB_PATH, _id=rid)
+        else:
+            return False

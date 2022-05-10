@@ -1,10 +1,12 @@
 id, name, author, isbn, rentaling, loacation
 155,TEST,TEST,1234,False,TEST
 156,TEST,TEST,1234,False,TEST
-174,insert_test_book,insert_test_author,12345,True,insert_TEST-123
-179,insert_test_book,insert_test_author,12345,True,insert_TEST-123
-184,insert_test_book,insert_test_author,12345,True,insert_TEST-123
-189,insert_test_book,insert_test_author,12345,True,insert_TEST-123
-194,insert_test_book,insert_test_author,12345,True,insert_TEST-123
-199,insert_test_book,insert_test_author,12345,True,insert_TEST-123
-204,insert_test_book,insert_test_author,12345,True,insert_TEST-123
+174,insert_test_book,insert_test_author,12345,False,insert_TEST-123
+179,insert_test_book,insert_test_author,12345,False,insert_TEST-123
+184,insert_test_book,insert_test_author,12345,False,insert_TEST-123
+189,insert_test_book,insert_test_author,12345,False,insert_TEST-123
+194,insert_test_book,insert_test_author,12345,False,insert_TEST-123
+199,insert_test_book,insert_test_author,12345,False,insert_TEST-123
+204,insert_test_book,insert_test_author,12345,False,insert_TEST-123
+208,test,test,test,False,test
+209,dd,dd,d,False,dfdf

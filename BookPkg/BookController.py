@@ -11,12 +11,20 @@ class BookController(_Book):
     def getBook(self) -> _Book:
         return self.book
 
-    def rentalBook(self) -> None:
-        self.book.onRentaling()
+    def rentalBook(self) -> bool:
+        if self.book.getRentaling():
+            return False
+        else:
+            self.book.onRentaling()
+            return True
         
-    def returnBook(self) -> None:
-        self.book.offRentaling()
- 
+    def returnBook(self) -> bool:
+        if not self.book.getRentaling():
+            return False
+        else:
+            self.book.offRentaling()
+            return True
+
     def isRentaling(self) -> bool:
         return self.book.getRentaling()
 

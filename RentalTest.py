@@ -2,7 +2,7 @@ from RentalPkg.RentalController import RenatlController
 from UserPkg.UserDBManager import UserDBManager
 from BookPkg.BookDBManager import BookDBManager
 from BookPkg.BookController import BookController
-from RentalPkg.RetnaDBlManager import RentalDBManager
+from RentalPkg.RentalDBlManager import RentalDBManager
 import unittest
 import time
 

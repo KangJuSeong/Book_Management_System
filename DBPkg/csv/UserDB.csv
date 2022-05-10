@@ -1,2 +1,3 @@
 id, name, address, phone, manager, email, password
 65,test,test,test,True,test@test,test
+73,test,test,test,False,test@testest,test

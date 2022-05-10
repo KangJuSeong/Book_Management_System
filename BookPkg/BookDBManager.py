@@ -1,3 +1,4 @@
+# from RentalPkg.RentalController import RentalController
 from .Book import _Book
 from DBPkg.DBManager import _DBManager
 from util.IDManager import getID, upID
@@ -26,4 +27,10 @@ class BookDBManager(_DBManager, _Book):
         return _DBManager._updateDB(data=update_book, db_path=self.DB_PATH, _id=bid)
 
     def deleteBook(self, bid: int) -> bool:
+        from RentalPkg.RentalDBManager import RentalDBManager
+        from RentalPkg.RentalController import RentalController
+    
+        rental = RentalController.getBookRentalList(bid)[0]
+        if len(rental):
+            RentalDBManager().deleteRental(rental['rid'])
         return _DBManager._deleteDB(db_path=self.DB_PATH, _id=bid)

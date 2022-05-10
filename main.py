@@ -1,4 +1,3 @@
-from signal import signal
 import sys 
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
@@ -10,6 +9,9 @@ from UserPkg.UserController import UserController
 
 from BookPkg.BookDBManager import BookDBManager
 from BookPkg.BookController import BookController
+
+from RentalPkg.RentalDBManager import RentalDBManager
+from RentalPkg.RentalController import RentalController
 
 
 def messageBox(window, text):
@@ -152,25 +154,98 @@ class MainScreen(QDialog):
         self.uid = uid
         messageBox(self, '로그인 성공')
         self.bm = BookDBManager()
+        self.rm = RentalDBManager()
         self.user = UserController(UserDBManager().getUser(uid))
 
         self.user_name_label.setText(f"{self.user.getUserAttr()['name']} 님, 안녕하세요!")
         self.renderBookList()
-        self.book_list.itemClicked.connect(self.clickedItem)
-        self.search_btn.clicked.connect(self.searchBookList)
+        self.renderRentalList()
+        self.book_list.itemClicked.connect(self.clickedBookItem)
+        self.rental_list.itemClicked.connect(self.clickedRentalItem)
+        self.search_btn.clicked.connect(self.clickedSearchBtn)
+        self.rental_btn.clicked.connect(self.clickedRentalBtn)
+        self.return_btn.clicked.connect(self.clickedReturnBtn)
+        self.delete_btn.clicked.connect(self.clickedDeleteBtn)
+        self.insert_btn.clicked.connect(self.clickedInsertBtn)
+        self.user_search_btn.clicked.connect(self.clickedSearchUserBtn)
     
     def renderBookList(self, keyword=None):
         self.book_list.clear()
         if keyword: data = self.bm.listBook(keyword=keyword)
         else: data = self.bm.listBook()
         for i, v in enumerate(data):
-            self.book_list.addItem(f"{v[0]} {v[1]} - {v[2]}")
-     
-    def clickedItem(self):
+            self.book_list.addItem(f"{v[0]} {v[1]} - {v[2]} - {v[3]}")
+
+    def renderRentalList(self):
+        self.rental_list.clear()
+        for i, v in enumerate(RentalController.getUserRentalList(self.user.getUserAttr()['uid'])):
+            bc = BookController(BookDBManager().getBook(v['bid']))
+            self.rental_list.addItem(f"{v['rid']} {bc.getBookAttr()['name']} - {bc.getBookAttr()['author']} - {bc.getBookAttr()['isbn']} / {v['date']}")
+
+    def clickedBookItem(self):
         bid = int(self.book_list.currentItem().text().split(' ')[0])
-        self.detailBookInfo(BookController(self.bm.getBook(bid)).getBookAttr())       
+        self.detailBookInfo(bid)
+
+    def clickedRentalItem(self):
+        rid = int(self.rental_list.currentItem().text().split(' ')[0])
+        rc = RentalController(RentalDBManager().getRental(rid))
+        bid = rc.getRentalAttr()['bid']
+        self.detailBookInfo(bid)
     
-    def detailBookInfo(self, book_attr):
+    def clickedRentalBtn(self):
+        bid = int(self.book_list.currentItem().text().split(' ')[0])
+        rid = self.rm.createRental(bid, self.user.getUserAttr()['uid'])
+        if rid == -1:
+            messageBox(self, '이미 대여중인 도서입니다.')
+            return
+        self.renderRentalList()
+        messageBox(self, '도서 대여 처리 되었습니다.')
+        
+    def clickedReturnBtn(self):
+        rid = int(self.rental_list.currentItem().text().split(' ')[0])
+        flag = self.rm.deleteRental(rid)
+        if flag:
+            self.renderRentalList()
+            messageBox(self, '도서 반납 처리 되었습니다.')
+        else:
+            messageBox(self, '도서 반납에 실패했습니다.')
+    
+    def clickedSearchBtn(self):
+        keyword = self.search_edit.text()
+        self.renderBookList(keyword=keyword)
+        
+    def clickedDeleteBtn(self):
+        if self.user.isManager():
+            bid = int(self.book_list.currentItem().text().split(' ')[0])
+            self.bm.deleteBook(bid)
+            self.renderBookList()
+            self.renderRentalList()
+        else:
+            messageBox(self, "관리자만 이용 가능합니다.")
+
+    def clickedInsertBtn(self):
+        if self.user.isManager():
+            name = self.book_name_edit.text()
+            author = self.book_author_edit.text()
+            isbn = self.book_isbn_edit.text()
+            location = self.book_location_edit.text()
+            if name == '' or author == '' or isbn == '' or location == '':
+                messageBox(self, "빈칸을 모두 채워주세요")
+                return
+            self.bm.createBook(name, author, isbn, False, location)
+            self.renderBookList()
+        else:
+            messageBox(self, "관리자만 이용 가능합니다.")
+            self.book_name_edit.clear()
+            self.book_author_edit.clear() 
+            self.book_isbn_edit.clear()
+            self.book_location_edit.clear()
+    
+    def clickedSearchUserBtn(self):
+        return
+
+    def detailBookInfo(self, bid):
+        book_attr = BookController(self.bm.getBook(bid)).getBookAttr()
         self.book_name_label.setText(f"책 이름 : {book_attr['name']}")
         self.book_author_label.setText(f"저자 : {book_attr['author']}")
         self.book_isbn_label.setText(f"ISBN : {book_attr['isbn']}")
@@ -179,11 +254,7 @@ class MainScreen(QDialog):
         else:
             self.book_rental_label.setText(f"대여 상태 : 대여 가능")
         self.book_location_label.setText(f"위치 : {book_attr['location']}")
-        
-    def searchBookList(self):
-        keyword = self.search_edit.text()
-        self.renderBookList(keyword=keyword)
-            
+ 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
