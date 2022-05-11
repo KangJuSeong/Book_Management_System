@@ -30,7 +30,7 @@ class BookDBManager(_DBManager, _Book):
         from RentalPkg.RentalDBManager import RentalDBManager
         from RentalPkg.RentalController import RentalController
     
-        rental = RentalController.getBookRentalList(bid)[0]
-        if len(rental):
-            RentalDBManager().deleteRental(rental['rid'])
+        rental = RentalController.getBookRentalList(bid)
+        if len(rental) > 0:
+            RentalDBManager().deleteRental(rental[0]['rid'])
         return _DBManager._deleteDB(db_path=self.DB_PATH, _id=bid)
