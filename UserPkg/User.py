@@ -27,5 +27,5 @@ class _User:
     def getPassword(self) -> str:
         return self.__password
 
-    def isManager(self) -> bool:
+    def getManager(self) -> bool:
         return self.__manager

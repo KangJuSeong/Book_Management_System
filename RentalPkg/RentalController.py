@@ -14,7 +14,8 @@ class RentalController(_Rental):
     def getRentalAttr(self) -> dict:
         data = {}
         for k, v in self.rental.__dict__.items():
-            data[k[9:]] = v
+            getter = getattr(self.rental, f"get{k[9].upper()}{k[10:]}")
+            data[k[9:]] = getter()
         return data
     
     @staticmethod

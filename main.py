@@ -1,4 +1,6 @@
-import sys 
+import sys
+from util.messageBox import messageBox
+
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import *
@@ -13,9 +15,6 @@ from BookPkg.BookController import BookController
 from RentalPkg.RentalDBManager import RentalDBManager
 from RentalPkg.RentalController import RentalController
 
-
-def messageBox(window, text):
-    QMessageBox.about(window, '알림', text)
 
 
 class LoginScreen(QDialog):
@@ -129,9 +128,9 @@ class SignUpScreen(QDialog):
             else:
                 uid = UserDBManager().createUser(self.name, self.address, self.phone, self.manager, self.email, self.pw)  # type: ignore
         if uid == -1: return
-        elif uid == 'Duplicate':
+        elif uid == -2:
             messageBox(self, "중복된 이메일 입니다.")
-        elif uid == 'NotEmailFormat':
+        elif uid == -3:
             messageBox(self, "이메일 형식이 올바르지 않습니다.")
         else:
             messageBox(self, "회원가입 성공")
@@ -251,10 +250,10 @@ class MainScreen(QDialog):
             self.renderBookList()
         else:
             messageBox(self, "관리자만 이용 가능합니다.")
-            self.book_name_edit.clear()
-            self.book_author_edit.clear() 
-            self.book_isbn_edit.clear()
-            self.book_location_edit.clear()
+        self.book_name_edit.clear()
+        self.book_author_edit.clear() 
+        self.book_isbn_edit.clear()
+        self.book_location_edit.clear()
     
     def clickedSearchUserBtn(self):
         self.user_list.clear()
@@ -271,21 +270,28 @@ class MainScreen(QDialog):
         self.no_return_list.clear()
         if self.user.isManager():
             keyword = self.no_return_edit.text()
-            bid_list = [i[0] for i in self.bm.listBook(keyword=keyword)]
-            uid_list = [i[0] for i in self.um.listUser(keyword=keyword)]
-            rid_list = [i[0] for i in self.rm.listRental()]
-            for i, rid in enumerate(rid_list):
-                rental = RentalController(self.rm.getRental(rid)).getRentalAttr()
-                for i, bid in enumerate(bid_list):
-                    if rental['bid'] == bid:
-                        book_name = BookController(self.bm.getBook(bid)).getBookAttr()['name']
-                        user_name = UserController(self.um.getUser(rental['uid'])).getUserAttr()['name']
-                        self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} {rental['date']}")
-                for i, uid in enumerate(uid_list):
-                    if rental['uid'] == uid:
-                        book_name = BookController(self.bm.getBook(rental['bid'])).getBookAttr()['name']
-                        user_name = UserController(self.um.getUser(uid)).getUserAttr()['name']
-                        self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} {rental['date']}")
+            if keyword == '':
+                rid_list = [i for i in self.rm.listRental()]
+                for i, v in enumerate(rid_list):
+                    book_name = BookController(self.bm.getBook(v[1])).getBookAttr()['name']
+                    user_name = UserController(self.um.getUser(v[2])).getUserAttr()['name']
+                    self.no_return_list.addItem(f"{v[0]} {book_name} - {user_name} / {v[3]}")
+            else:
+                bid_list = [i[0] for i in self.bm.listBook(keyword=keyword)]
+                uid_list = [i[0] for i in self.um.listUser(keyword=keyword)]
+                rid_list = [i[0] for i in self.rm.listRental()]
+                for i, rid in enumerate(rid_list):
+                    rental = RentalController(self.rm.getRental(rid)).getRentalAttr()
+                    for i, bid in enumerate(bid_list):
+                        if rental['bid'] == bid:
+                            book_name = BookController(self.bm.getBook(bid)).getBookAttr()['name']
+                            user_name = UserController(self.um.getUser(rental['uid'])).getUserAttr()['name']
+                            self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
+                    for i, uid in enumerate(uid_list):
+                        if rental['uid'] == uid:
+                            book_name = BookController(self.bm.getBook(rental['bid'])).getBookAttr()['name']
+                            user_name = UserController(self.um.getUser(uid)).getUserAttr()['name']
+                            self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
         else:
             messageBox(self, "관리자만 이용 가능합니다.")
         self.no_return_edit.setText('')

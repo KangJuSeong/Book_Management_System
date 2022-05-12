@@ -1,2 +1,3 @@
 id, name, author, isbn, rentaling, loacation
 210,공기수,김찬호,1234,True,A-10
+211,동화책,강주성,56789,True,A-300

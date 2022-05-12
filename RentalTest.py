@@ -1,8 +1,11 @@
-from RentalPkg.RentalController import RenatlController
 from UserPkg.UserDBManager import UserDBManager
+
 from BookPkg.BookDBManager import BookDBManager
 from BookPkg.BookController import BookController
-from RentalPkg.RentalDBlManager import RentalDBManager
+
+from RentalPkg.RentalDBManager import RentalDBManager
+from RentalPkg.RentalController import RentalController
+
 import unittest
 import time
 
@@ -17,7 +20,7 @@ class TestRentalManager(unittest.TestCase):
         bid = bm.createBook('TEST', 'TEST', 1234, False, 'TEST')
         rid = rm.createRental(bid, uid)
         result = [True, {'rid': rid, 'bid': bid, 'uid': uid, 'rental': True, 'date': time.strftime('%Y-%m-%d-%H:%M', time.localtime(time.time()))}]
-        test_result = [BookController(BookDBManager().getBook(bid)).isRentaling(), RenatlController(RentalDBManager().getRental(rid)).getRentalAttr()]
+        test_result = [BookController(BookDBManager().getBook(bid)).isRentaling(), RentalController(RentalDBManager().getRental(rid)).getRentalAttr()]
         self.assertEqual(result, test_result)
         rm.deleteRental(rid)
         bm.deleteBook(bid)
@@ -35,8 +38,7 @@ class TestRentalManager(unittest.TestCase):
         self.assertEqual(result, test_result)
         bm.deleteBook(bid)
         um.deleteUser(uid)
-        
-        
+
 
 if __name__ == '__main__':
     unittest.main()

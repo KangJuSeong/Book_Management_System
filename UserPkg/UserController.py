@@ -11,11 +11,12 @@ class UserController(_User):
     def getUserAttr(self) -> dict:
         data = {}
         for k, v in self.user.__dict__.items():
-            data[k[7:]] = v
+            getter = getattr(self.user, f"get{k[7].upper()}{k[8:]}")
+            data[k[7:]] = getter()
         return data
     
     def isManager(self) -> bool:
-        return self.user.isManager()
+        return self.user.getManager()
 
     @staticmethod
     def login(email: str, password: str) -> int:

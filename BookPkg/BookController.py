@@ -31,6 +31,6 @@ class BookController(_Book):
     def getBookAttr(self) -> dict:
         data = {}
         for k, v in self.book.__dict__.items():
-            data[k[7:]] = v
+            getter = getattr(self.book, f"get{k[7].upper()}{k[8:]}")
+            data[k[7:]] = getter()
         return data
-            
