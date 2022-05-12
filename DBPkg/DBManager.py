@@ -36,7 +36,7 @@ class _DBManager:
         return _id
 
     @staticmethod
-    def _updateDB(data: object, db_path: str, _id: int):
+    def _updateDB(data: object, db_path: str, _id: int) -> bool:
         rows = pd.read_csv(db_path).to_numpy().tolist()
         flag = False
         for i, v in enumerate(rows):
@@ -56,7 +56,7 @@ class _DBManager:
             return False
 
     @staticmethod
-    def _deleteDB(db_path: str, _id: int):
+    def _deleteDB(db_path: str, _id: int) -> bool:
         df = pd.read_csv(db_path, index_col='id')
         try:
             df = df.drop(_id)
