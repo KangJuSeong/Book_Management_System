@@ -163,8 +163,8 @@
 
 ## Use Case Diagram
 
-    ![UseCaseDiagram](./readme_img/uscase_diagram.jpg)
+    ![use_case_diagram](./readme_img/usecase_diagram.jpg)
 
 ## Class Diagram
 
-    ![ClassDiagram](./readme_img/class_diagram.png)
+    ![class_diagram](./readme_img/class_diagram.png)
