@@ -279,8 +279,8 @@ class MainScreen(QDialog):
             else:
                 bid_list = [i[0] for i in self.bm.listBook(keyword=keyword)]
                 uid_list = [i[0] for i in self.um.listUser(keyword=keyword)]
-                for i, rid in enumerate(rid_list):
-                    rental = RentalController(self.rm.getRental(rid)).getRentalAttr()
+                for i, v in enumerate(rid_list):
+                    rental = RentalController(self.rm.getRental(v[0])).getRentalAttr()
                     for i, bid in enumerate(bid_list):
                         if rental['bid'] == bid:
                             book_name = BookController(self.bm.getBook(bid)).getBookAttr()['name']
