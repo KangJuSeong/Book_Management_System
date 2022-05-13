@@ -79,8 +79,7 @@
     |Preconditions|회원가입 입력 창을 출력한다.
     |Post conditions|회원가입이 정상적으로 완료 되었으면 회원번호를 출력한다.
     |Flow of activities|Actor : 1. 이용자는 회원가입을 위해 회원가입 버튼을 클릭한다. 2. 이름, 전화번호, 주소, 생년월일을 입력 한다. 3. 입력을 마치면 완료 버튼을 클릭 한다. 4. 출력된 회원번호를 이용자가 저장한다. System : 3.1. 완료 버튼이 클릭 되었을 때, 입력된 정보에서 전화번호를 통해 현재 가입되어 있는 유저 정보의 전화번호와 비교하여 같은 전화번호가 존재하면 이미 가입된 유저라는 팝업창을 출력한다. 3.2. 존재하지 않는 전화번호라면 입력된 정보를 저장하고 회원가입 성공 팝업창을 출력한다.
-    |Exception conditions|1. 회원가입 시 이미 가입 되어있는 이용자일 경우
-                          -> 회원가입 시 입력된 전화번호를 통해 이미 가입되어 있다는 팝업창을 보여준다. 2. 회원가입 입력 양식에 빈칸이 존재하는 경우 -> 빈칸이 존재하면 안된다는 팝업창을 보여준다.
+    |Exception conditions|1. 회원가입 시 이미 가입 되어있는 이용자일 경우 -> 회원가입 시 입력된 전화번호를 통해 이미 가입되어 있다는 팝업창을 보여준다. 2. 회원가입 입력 양식에 빈칸이 존재하는 경우 -> 빈칸이 존재하면 안된다는 팝업창을 보여준다.
 
     UC2. 이용자/관리자 도서 확인 및 조회하기
 
@@ -164,8 +163,8 @@
 
 ## Use Case Diagram
 
-    ![UseCaseDiagram](/readme_img/uscase_diagram.jpg)
+    ![UseCaseDiagram](./readme_img/uscase_diagram.jpg)
 
 ## Class Diagram
 
-    ![ClassDiagram](/readme_img/class_diagram.png)
+    ![ClassDiagram](./readme_img/class_diagram.png)
