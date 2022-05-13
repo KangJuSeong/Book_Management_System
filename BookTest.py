@@ -40,9 +40,6 @@ class TestBookManager(unittest.TestCase):
         flag = bm.deleteBook(bid=bid)
         self.assertEqual(flag, True)
 
-    # def test_create_book(self):
-    #     self.bm = BookDBManager()
-    #     self.bm.createBook('insert_test_book', 'insert_test_author', 12345, True, 'insert_TEST-123')
 
 if __name__ == '__main__':
     unittest.main()
