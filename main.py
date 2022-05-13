@@ -270,8 +270,8 @@ class MainScreen(QDialog):
         self.no_return_list.clear()
         if self.user.isManager():
             keyword = self.no_return_edit.text()
+            rid_list = [i for i in self.rm.listRental()]
             if keyword == '':
-                rid_list = [i for i in self.rm.listRental()]
                 for i, v in enumerate(rid_list):
                     book_name = BookController(self.bm.getBook(v[1])).getBookAttr()['name']
                     user_name = UserController(self.um.getUser(v[2])).getUserAttr()['name']
@@ -279,7 +279,6 @@ class MainScreen(QDialog):
             else:
                 bid_list = [i[0] for i in self.bm.listBook(keyword=keyword)]
                 uid_list = [i[0] for i in self.um.listUser(keyword=keyword)]
-                rid_list = [i[0] for i in self.rm.listRental()]
                 for i, rid in enumerate(rid_list):
                     rental = RentalController(self.rm.getRental(rid)).getRentalAttr()
                     for i, bid in enumerate(bid_list):
