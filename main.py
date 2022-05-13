@@ -151,7 +151,6 @@ class MainScreen(QDialog):
         super().__init__()
         loadUi("/Users/gangjuseong/Desktop/study/3-1/객분설/OOAD_Project/UI/MainScreen.ui", self)
         self.uid = uid
-        messageBox(self, '로그인 성공')
         self.bm = BookDBManager()
         self.rm = RentalDBManager()
         self.um = UserDBManager()
