@@ -1,4 +1,2 @@
 id, name, address, phone, manager, email, password
-65,test,test,test,True,test@test,test
-73,test,test,test,False,test@testest,test
 74,김하연,성북구,010-8794-7863,True,hayoun28@kookmin.ac.kr,1234
