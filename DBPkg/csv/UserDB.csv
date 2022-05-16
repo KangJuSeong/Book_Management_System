@@ -2,3 +2,5 @@ id, name, address, phone, manager, email, password
 74,홍길동,성북구,010-8794-7863,False,honggildong@kookmin.ac.kr,1234
 77,강주성,성북구 솔샘로 4길,010-3377-5284,True,wntjd3686@gmail.com,js797503
 78,임꺽정,강남구 헬로빌딩,010-7777-8888,False,hello@kookmin.ac.kr,1234
+79,표상우,서울시 강북구 솔샘로 174,01094025437,False,sangwoogood@naver.com,sangwoo
+80,강주성,솔샘로 4길,010-3377-5284,False,hello@gmail.com,js797503
