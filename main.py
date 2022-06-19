@@ -21,7 +21,7 @@ class LoginScreen(QDialog):
 
     def __init__(self):
         super().__init__()
-        loadUi("/Users/gangjuseong/Desktop/study/3-1/객분설/OOAD_Project/UI/LoginScreen.ui", self)
+        loadUi("/Users/gangjuseong/Desktop/study/3-1/OOAD/OOAD_Project/UI/LoginScreen.ui", self)
         self.udbm = UserDBManager()
         
         self.email = ""
@@ -64,7 +64,7 @@ class SignUpScreen(QDialog):
     
     def __init__(self):
         super().__init__()
-        loadUi("/Users/gangjuseong/Desktop/study/3-1/객분설/OOAD_Project/UI/SignUpScreen.ui", self)
+        loadUi("/Users/gangjuseong/Desktop/study/3-1/OOAD/OOAD_Project/UI/SignUpScreen.ui", self)
         
         self.email = ''
         self.pw = ''
@@ -149,7 +149,7 @@ class SignUpScreen(QDialog):
 class MainScreen(QDialog):
     def __init__(self, uid):
         super().__init__()
-        loadUi("/Users/gangjuseong/Desktop/study/3-1/객분설/OOAD_Project/UI/MainScreen.ui", self)
+        loadUi("/Users/gangjuseong/Desktop/study/3-1/OOAD/OOAD_Project/UI/MainScreen.ui", self)
         self.uid = uid
         self.bm = BookDBManager()
         self.rm = RentalDBManager()
