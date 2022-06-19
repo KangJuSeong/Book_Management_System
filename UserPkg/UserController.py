@@ -1,34 +1,19 @@
-from .UserDBManager import UserDBManager
-from .User import _User
+from UserPkg.UserService import UserService
 
 
-class UserController(_User):
+class UserController:
     
-    def __init__(self, user: _User):
-        self.user: _User = user
-        self.dbm: UserDBManager = UserDBManager()
+    def __init__(self, uid=None) -> None:
+        self.us = UserService()
+        self.uid = uid
     
-    def getUserAttr(self) -> dict:
-        data = {}
-        for k, v in self.user.__dict__.items():
-            getter = getattr(self.user, f"get{k[7].upper()}{k[8:]}")
-            data[k[7:]] = getter()
-        return data
-    
-    def isManager(self) -> bool:
-        return self.user.getManager()
-
-    @staticmethod
-    def login(email: str, password: str) -> int:
-        user: list = UserDBManager().listUser(keyword=email)
-        if user:
-            db_password = user[0][-1]
-            if password == db_password: return user[0][0]
-            else: return False
-        else: return False
-
-    @staticmethod
-    def getManagerCode():
+    def login(self, email: str, password: str) -> int:
+        return self.us.login(email, password)
+        
+    def signup(self, name: str, address: str, phone: str, manager: bool, email: str, pw: str):
+        return self.us.signup(name, address, phone, manager, email, pw)
+        
+    def getManagerCode(self):
         with open("DBPkg/txt/ManagerCode.txt") as f:
             code = f.readline()
             return code

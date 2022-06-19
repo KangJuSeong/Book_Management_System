@@ -17,9 +17,6 @@ class UserDBManager(_DBManager, _User):
         return _DBManager._selectDB(db_path=self.DB_PATH, keyword=keyword)
     
     def createUser(self, name: str, address: str, phone: str, manager: bool, email: str, password: str) -> int:
-        duplicate_email: list = self.listUser(keyword=email)
-        if duplicate_email: return -2 
-        if not '@' in email: return -3
         uid: int = getID(self.UID_PATH)
         upID(self.UID_PATH)
         self.user = _User(uid, name, address, phone, manager, email, password)

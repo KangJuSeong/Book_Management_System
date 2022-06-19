@@ -1,4 +1,5 @@
 import sys
+import os
 from util.messageBox import messageBox
 
 from PyQt5.QtWidgets import *
@@ -21,8 +22,8 @@ class LoginScreen(QDialog):
 
     def __init__(self):
         super().__init__()
-        loadUi("/Users/gangjuseong/Desktop/study/3-1/OOAD/OOAD_Project/UI/LoginScreen.ui", self)
-        self.udbm = UserDBManager()
+        loadUi(os.getcwd() + "/UI/LoginScreen.ui", self)
+        self.uc = UserController()
         
         self.email = ""
         self.pw = ""
@@ -43,7 +44,7 @@ class LoginScreen(QDialog):
         self.pw = self.pw_edit.text()
         
     def clickLogin(self):
-        self.uid = UserController.login(self.email, self.pw)
+        self.uid = self.uc.login(self.email, self.pw)
         if self.uid:
             self.openMainWindow()
         else:
@@ -64,7 +65,8 @@ class SignUpScreen(QDialog):
     
     def __init__(self):
         super().__init__()
-        loadUi("/Users/gangjuseong/Desktop/study/3-1/OOAD/OOAD_Project/UI/SignUpScreen.ui", self)
+        loadUi(os.getcwd() + "/UI/SignUpScreen.ui", self)
+        self.uc = UserController()
         
         self.email = ''
         self.pw = ''
@@ -121,12 +123,12 @@ class SignUpScreen(QDialog):
             messageBox(self, "관리자 및 사용자를 선택해주세요.")
         else:
             if self.manager:
-                if self.manager_code == UserController.getManagerCode():
-                    uid = UserDBManager().createUser(self.name, self.address, self.phone, self.manager, self.email, self.pw)  # type: ignore
+                if self.manager_code == self.uc.getManagerCode():
+                    uid = self.uc.signup(self.name, self.address, self.phone, self.manager, self.email, self.pw)  # type: ignore
                 else:
                     messageBox(self, "관리자 코드가 잘못되었습니다.")
             else:
-                uid = UserDBManager().createUser(self.name, self.address, self.phone, self.manager, self.email, self.pw)  # type: ignore
+                uid = self.uc.signup(self.name, self.address, self.phone, self.manager, self.email, self.pw)  # type: ignore
         if uid == -1: return
         elif uid == -2:
             messageBox(self, "중복된 이메일 입니다.")
@@ -149,7 +151,7 @@ class SignUpScreen(QDialog):
 class MainScreen(QDialog):
     def __init__(self, uid):
         super().__init__()
-        loadUi("/Users/gangjuseong/Desktop/study/3-1/OOAD/OOAD_Project/UI/MainScreen.ui", self)
+        loadUi(os.getcwd() + "/UI/MainScreen.ui", self)
         self.uid = uid
         self.bm = BookDBManager()
         self.rm = RentalDBManager()

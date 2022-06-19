@@ -5,3 +5,4 @@ id, name, address, phone, manager, email, password
 79,표상우,서울시 강북구 솔샘로 174,01094025437,False,sangwoogood@naver.com,sangwoo
 80,강주성,솔샘로 4길,010-3377-5284,False,hello@gmail.com,js797503
 81,박채연,국민대학교,010-1234-1234,False,muy5310@kookmin.ac.kr,1234
+82,TEST,TEST,010-3377-5284,False,rkdwntjd@gmail.com,1234
