@@ -1,36 +1,21 @@
-from .BookDBManager import BookDBManager
-from .Book import _Book
+from ast import keyword
+from BookPkg.BookService import BookService
 
 
-class BookController(_Book):
+class BookController:
     
-    def __init__(self, book: _Book):
-        self.book: _Book = book
-        self.dbm: BookDBManager = BookDBManager()
-        
-    def getBook(self) -> _Book:
-        return self.book
-
-    def rentalBook(self) -> bool:
-        if self.book.getRentaling():
-            return False
-        else:
-            self.book.onRentaling()
-            return True
-        
-    def returnBook(self) -> bool:
-        if not self.book.getRentaling():
-            return False
-        else:
-            self.book.offRentaling()
-            return True
-
-    def isRentaling(self) -> bool:
-        return self.book.getRentaling()
-
-    def getBookAttr(self) -> dict:
-        data = {}
-        for k, v in self.book.__dict__.items():
-            getter = getattr(self.book, f"get{k[7].upper()}{k[8:]}")
-            data[k[7:]] = getter()
-        return data
+    def __init__(self, bid=None):
+        self.bs = BookService()
+        self.bid = bid
+       
+    def getBookList(self, keyword=None):
+        return self.bs.getBookList(keyword=keyword)
+    
+    def getBookAttr(self):
+        return self.bs.getBookAttr(self.bid)
+    
+    def deleteBook(self):
+        return self.bs.deleteBook(self.bid)
+    
+    def createBook(self, name, author, isbn, rental, location):
+        return self.bs.createBook(name, author, isbn, rental, location)

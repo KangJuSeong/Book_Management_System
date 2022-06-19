@@ -21,3 +21,15 @@ class _Rental:
     
     def getDate(self) -> str:
         return self.__date
+    
+    def setRid(self, rid: int) -> None:
+        self.__rid = rid
+        
+    def setBid(self, bid: int) -> None:
+        self.__bid = bid
+        
+    def setUid(self, uid: int) -> None:
+        self.__uid = uid
+        
+    def setRental(self, rental: bool) -> None:
+        self.__rental = rental
