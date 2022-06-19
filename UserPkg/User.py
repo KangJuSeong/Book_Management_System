@@ -29,3 +29,21 @@ class _User:
 
     def getManager(self) -> bool:
         return self.__manager
+    
+    def setUid(self, uid: int) -> None:
+        self.__uid = uid
+        
+    def setName(self, name: str) -> None:
+        self.__name = name
+    
+    def setAddress(self, address: str) -> None:
+        self.__address = address
+        
+    def setPhone(self, phone: str) -> None:
+        self.__phone = phone
+        
+    def setEmail(self, email: str) -> None:
+        self.__email = email
+        
+    def setPassword(self, password: str) -> None:
+        self.__password = password

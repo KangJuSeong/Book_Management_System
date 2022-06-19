@@ -1,41 +1,14 @@
-from .RentalDBManager import RentalDBManager
-from .Rental import _Rental
+from RentalPkg.RentalService import RentalServie
 
 
-class RentalController(_Rental):
+class RentalController:
     
-    def __init__(self, rental: _Rental):
-        self.rental: _Rental = rental
-        self.dbm: RentalDBManager = RentalDBManager()
+    def __init__(self, rid=None):
+        self.rid = rid
+        self.rs = RentalServie()
         
-    def getRental(self) -> _Rental:
-        return self.rental
+    def getRentalAttr(self):
+        return self.rs.getRentalAttr(self.rid)
     
-    def getRentalAttr(self) -> dict:
-        data = {}
-        for k, v in self.rental.__dict__.items():
-            getter = getattr(self.rental, f"get{k[9].upper()}{k[10:]}")
-            data[k[9:]] = getter()
-        return data
-    
-    @staticmethod
-    def getUserRentalList(uid) -> list:
-        data = []
-        for i, v in enumerate(RentalDBManager().listRental()):
-            rental = RentalController(_Rental(v[0], v[1], v[2], v[3], v[4]))
-            rental_attr = rental.getRentalAttr()
-            if rental_attr['uid'] == uid:
-                data.append(rental_attr)
-        return data
-    
-    @staticmethod
-    def getBookRentalList(bid) -> list:
-        data = []
-        for i, v in enumerate(RentalDBManager().listRental()):
-            rental = RentalController(_Rental(v[0], v[1], v[2], v[3], v[4]))
-            rental_attr = rental.getRentalAttr()
-            if rental_attr['bid'] == bid:
-                data.append(rental_attr)
-        return data 
-    
-        
+    def getRentalList(self):
+        return self.rs.getRentalList()

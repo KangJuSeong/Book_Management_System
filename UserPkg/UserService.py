@@ -1,12 +1,14 @@
 from UserPkg.UserDBManager import UserDBManager
+from UserPkg.User import _User
+from RentalPkg.RentalService import RentalServie
 
 
-
-class UserService:
+class UserService(_User):
     
     def __init__(self):
         self.udm = UserDBManager()
-        
+        self.rs = RentalServie()
+                
     def login(self, email: str, password: str):
         user: list = self.udm.listUser(keyword=email)
         if user:
@@ -20,3 +22,15 @@ class UserService:
         if duplicate_email: return -2 
         if not '@' in email: return -3
         return self.udm.createUser(name, address, phone, manager, email, pw)
+    
+    def getAttr(self, uid: int):
+        user = self.udm.getUser(uid=uid)
+        return {'uid': user.getUid(),
+                'name': user.getName(),
+                'address': user.getAddress(),
+                'phone': user.getPhone(),
+                'manager': user.getManager()}
+        
+    def getUserList(self, keyword=None):
+        return self.udm.listUser(keyword=keyword)
+        
