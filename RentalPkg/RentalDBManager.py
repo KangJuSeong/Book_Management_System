@@ -1,7 +1,5 @@
 from .Rental import _Rental
 from DBPkg.DBManager import _DBManager
-from BookPkg.BookController import BookController
-from BookPkg.BookDBManager import BookDBManager
 from util.IDManager import getID, upID
 import time
 

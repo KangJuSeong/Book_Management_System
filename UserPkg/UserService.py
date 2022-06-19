@@ -29,7 +29,8 @@ class UserService(_User):
                 'name': user.getName(),
                 'address': user.getAddress(),
                 'phone': user.getPhone(),
-                'manager': user.getManager()}
+                'manager': user.getManager(),
+                'email': user.getEmail()}
         
     def getUserList(self, keyword=None):
         return self.udm.listUser(keyword=keyword)

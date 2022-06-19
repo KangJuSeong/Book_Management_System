@@ -7,13 +7,8 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-from UserPkg.UserDBManager import UserDBManager
 from UserPkg.UserController import UserController
-
-from BookPkg.BookDBManager import BookDBManager
 from BookPkg.BookController import BookController
-
-from RentalPkg.RentalDBManager import RentalDBManager
 from RentalPkg.RentalController import RentalController
 
 
