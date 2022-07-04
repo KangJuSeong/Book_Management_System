@@ -7,7 +7,6 @@ class UserService(_User):
     
     def __init__(self):
         self.udm = UserDBManager()
-        self.rs = RentalServie()
                 
     def login(self, email: str, password: str):
         user: list = self.udm.listUser(keyword=email)
