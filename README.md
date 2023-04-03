@@ -168,3 +168,6 @@
 ## Class Diagram
 
 ![class_diagram](./readme_img/class_diagram.png)
+
+## Service
+![service_main](./readme_img/main_img.jpg)
