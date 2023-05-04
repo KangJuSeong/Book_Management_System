@@ -1,0 +1,31 @@
+
+server:
+  port: 9000
+  servlet:
+    context-path: /
+    encoding:
+      charset: utf-8
+      enabled: true
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/library?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: js797503
+  jpa:
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+        globally_quoted_identifiers: true
+    show-sql: true
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
