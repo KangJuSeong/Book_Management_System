@@ -33,4 +33,7 @@ class User(
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     var role: Role = role
+
+    override fun toString(): String =
+        "${this.name}, ${this.address}, ${this.phone}, ${this.email}, ${this.password}, ${this.role}"
 }
