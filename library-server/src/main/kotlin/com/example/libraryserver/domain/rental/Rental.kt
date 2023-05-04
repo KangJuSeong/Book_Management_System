@@ -4,13 +4,18 @@ import com.example.libraryserver.domain.AuditEntity
 import com.example.libraryserver.domain.book.Book
 import com.example.libraryserver.domain.user.User
 import jakarta.persistence.Column
+import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
 
+
+@Entity
+@Table(name = "Rental")
 class Rental(
     book: Book,
     user: User,
