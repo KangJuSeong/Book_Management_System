@@ -23,12 +23,10 @@ class Book(
     @Column(name = "isbn")
     var isbn: String = isbn
 
-    @Column(name = "rentaling")
-    var rentaling: Boolean = false
 
     @Column(name = "location")
     var location: String = location
 
     override fun toString(): String =
-        "${this.name}, ${this.author}, ${this.isbn}, ${this.rentaling}, ${this.location}"
+        "${this.name}, ${this.author}, ${this.isbn}, ${this.location}"
 }
