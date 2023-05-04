@@ -36,4 +36,14 @@ class User(
 
     override fun toString(): String =
         "${this.name}, ${this.address}, ${this.phone}, ${this.email}, ${this.password}, ${this.role}"
+
+    fun toDto(): UserDto =
+        UserDto(
+            name = this.name,
+            address = this.address,
+            phone = this.phone,
+            email = this.email,
+            password = this.password,
+            role = this.role
+        )
 }
