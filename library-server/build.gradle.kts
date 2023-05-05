@@ -39,6 +39,7 @@ dependencies {
     implementation("io.github.serpro69:kotlin-faker:1.13.0")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
     implementation("io.github.microutils:kotlin-logging:3.0.5")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 }
 
 tasks.withType<KotlinCompile> {
