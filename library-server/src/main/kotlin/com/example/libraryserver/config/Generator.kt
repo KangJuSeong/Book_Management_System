@@ -63,6 +63,7 @@ class Generator(
         var rentals = mutableListOf<Rental>()
 
         for (i in 0..cnt / 2) {
+            books[i].isRental = true
             val rental: Rental = generateRental(books[i], users[i])
             log.info { "Insert Rental(Dummy): $rental"}
             rentals.add(rental)
@@ -85,6 +86,7 @@ class Generator(
             name = faker.book.title(),
             author = faker.book.author(),
             isbn = faker.barcode.isbn(),
+            isRental = false,
             location = faker.code.asin()
         ).toEntity()
 

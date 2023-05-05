@@ -37,10 +37,4 @@ class UserController(
     fun info(@PathVariable("id") id: String): Response<*> {
         return DataResponse(HttpStatus.OK, "회원 정보 가져오기", userService.info(id.toInt()))
     }
-
-    @GetMapping("/revers/users")
-    fun reversUsers(): Response<*> {
-        val users: List<UserDto> = userService.reversOrderUsers()
-        return DataResponse(HttpStatus.OK, "jdsl 테스트", users)
-    }
 }

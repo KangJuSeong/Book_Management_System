@@ -19,6 +19,4 @@ class UserService(
     }
 
     fun info(id: Int): UserResDto = userRepository.findById(id).toResDto()
-
-    fun reversOrderUsers(): List<UserDto> = userRepository.reversOrderUsers().map {it.toDto()}
 }
