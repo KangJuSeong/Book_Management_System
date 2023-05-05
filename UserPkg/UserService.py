@@ -1,9 +1,9 @@
 from UserPkg.UserDBManager import UserDBManager
-from UserPkg.User import _User
+from UserPkg.User import User
 from RentalPkg.RentalService import RentalServie
 
 
-class UserService(_User):
+class UserService(User):
     
     def __init__(self):
         self.udm = UserDBManager()

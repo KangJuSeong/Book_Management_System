@@ -9,10 +9,6 @@ import java.util.NoSuchElementException
 class UserService(
     private val userRepository: UserRepository
 ) {
-
-    fun findAll(): List<UserDto> = userRepository.findAll().map {it.toDto()}
-    fun reversOrderUsers(): List<UserDto> = userRepository.reversOrderUsers().map {it.toDto()}
-
     fun login(data: LoginDto): UserResDto? {
         return userRepository.findByEmailAndPassword(data.email, data.password)?.toResDto()
     }
@@ -21,4 +17,8 @@ class UserService(
         userRepository.findByEmail(data.email)?: return userRepository.save(data.toEntity()).toResDto()
         return null
     }
+
+    fun info(id: Int): UserResDto = userRepository.findById(id).toResDto()
+
+    fun reversOrderUsers(): List<UserDto> = userRepository.reversOrderUsers().map {it.toDto()}
 }

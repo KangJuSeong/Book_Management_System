@@ -1,13 +1,15 @@
 import sys
 import os
 from util.messageBox import messageBox
+from util.my_requests import MyRequests
+from util.IDManager import getManagerCode
 
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-from UserPkg.UserController import UserController
+from UserPkg.User import User
 from BookPkg.BookController import BookController
 from RentalPkg.RentalController import RentalController
 
@@ -18,11 +20,9 @@ class LoginScreen(QDialog):
     def __init__(self):
         super().__init__()
         loadUi(os.getcwd() + "/UI/LoginScreen.ui", self)
-        self.uc = UserController()
-        
+        self.req = MyRequests()
         self.email = ""
         self.pw = ""
-        self.uid = 0
 
         self.pw_edit.setEchoMode(QLineEdit.Password)
 
@@ -39,11 +39,16 @@ class LoginScreen(QDialog):
         self.pw = self.pw_edit.text()
         
     def clickLogin(self):
-        self.uid = self.uc.login(self.email, self.pw)
-        if self.uid:
+        body = {
+            "email": self.email,
+            "password": self.pw
+        }
+        status, res, data = self.req.reqPost("user/login", body)
+        if status == 200 and res.get('status') == "OK":
+            self.uid = data.get('id')
             self.openMainWindow()
         else:
-            messageBox(self, '이메일 또는 비밀번호가 올바르지 않습니다.')
+            messageBox(self, res.get('msg'))
         self.email_edit.clear()
         self.pw_edit.clear()
 
@@ -61,7 +66,6 @@ class SignUpScreen(QDialog):
     def __init__(self):
         super().__init__()
         loadUi(os.getcwd() + "/UI/SignUpScreen.ui", self)
-        self.uc = UserController()
         
         self.email = ''
         self.pw = ''
@@ -70,6 +74,7 @@ class SignUpScreen(QDialog):
         self.address = ''
         self.manager = ''
         self.manager_code = ''
+        self.req = MyRequests()
         
         self.pw_edit.setEchoMode(QLineEdit.Password)
         
@@ -110,28 +115,49 @@ class SignUpScreen(QDialog):
         self.manager = False
     
     def clickSignUp(self):
+        body = dict()
+        status = 0
+        res = dict()
         if self.email == '' or self.pw == '' or self.name == '' or self.phone == '' or self.address == '':
             messageBox(self, '정보를 모두 입력해주세요.')
             return
-        uid = -1
         if self.manager == '':
             messageBox(self, "관리자 및 사용자를 선택해주세요.")
         else:
             if self.manager:
-                if self.manager_code == self.uc.getManagerCode():
-                    uid = self.uc.signup(self.name, self.address, self.phone, self.manager, self.email, self.pw)  # type: ignore
+                if self.manager_code == getManagerCode():
+                    body = {
+                        "name": self.name, 
+                        "address": self.address, 
+                        "phone": self.phone, 
+                        "role": "MANAGER",
+                        "email": self.email,
+                        "password": self.pw
+                    }
+                    status, res = self.req.reqPost("user/signup", body)
                 else:
                     messageBox(self, "관리자 코드가 잘못되었습니다.")
             else:
-                uid = self.uc.signup(self.name, self.address, self.phone, self.manager, self.email, self.pw)  # type: ignore
-        if uid == -1: return
-        elif uid == -2:
-            messageBox(self, "중복된 이메일 입니다.")
-        elif uid == -3:
-            messageBox(self, "이메일 형식이 올바르지 않습니다.")
-        else:
+                body = {
+                        "name": self.name, 
+                        "address": self.address, 
+                        "phone": self.phone, 
+                        "role": "USER",
+                        "email": self.email,
+                        "password": self.pw
+                    }
+                status, res = self.req.reqPost("user/signup", body)
+        if status == 200 and res.get('status') == 'OK':
             messageBox(self, "회원가입 성공")
             self.openLoginWindow()
+        else:
+            messageBox(self, "회원가입 실패")
+            self.email_edit.clear()
+            self.pw_edit.clear()
+            self.name_edit.clear()
+            self.phone_edit.clear()
+            self.address_edit.clear()
+            self.manager_code_edit.clear()
        
     def openLoginWindow(self):
         self.email_edit.clear()
@@ -147,10 +173,18 @@ class MainScreen(QDialog):
     def __init__(self, uid):
         super().__init__()
         loadUi(os.getcwd() + "/UI/MainScreen.ui", self)
-        self.uc = UserController(uid=uid)
-        self.user = self.uc.getUserAttr()
-
-        self.current_user_name_label.setText(f"{self.user['name']} 님, 안녕하세요!")
+        print(uid)
+        self.req = MyRequests()
+        status, res, data = self.req.reqGet(f"user/info/{uid}")
+        self.user = User(
+            data.get('id'),
+            data.get('name'),
+            data.get('address'),
+            data.get('phone'),
+            data.get('role'),
+            data.get('email'))
+        
+        self.current_user_name_label.setText(f"Welcome {self.user.name}!")
         self.renderBookList()
         self.renderRentalList()
     
@@ -176,9 +210,9 @@ class MainScreen(QDialog):
 
     def renderRentalList(self):
         self.rental_list.clear()
-        for i, v in enumerate(self.uc.getUserRentalList()):
-            book = BookController(bid=v['bid']).getBookAttr()
-            self.rental_list.addItem(f"{v['rid']} {book['name']} - {book['author']} - {book['isbn']} / {v['date']}")
+        # for i, v in enumerate(self.uc.getUserRentalList()):
+        #     book = BookController(bid=v['bid']).getBookAttr()
+        #     self.rental_list.addItem(f"{v['rid']} {book['name']} - {book['author']} - {book['isbn']} / {v['date']}")
 
     def clickedBookItem(self):
         bid = int(self.book_list.currentItem().text().split(' ')[0])
@@ -191,29 +225,29 @@ class MainScreen(QDialog):
     
     def clickedUserItem(self):
         uid = int(self.user_list.currentItem().text().split(' ')[0])
-        self.detailUserInfo(uid)
+        self.detailUserInfo()
         
     def clikcedNoReturnItem(self):
         rid = int(self.no_return_list.currentItem().text().split(' ')[0])
         self.detailRentalInfo(rid)
     
     def clickedRentalBtn(self):
-        bid = int(self.book_list.currentItem().text().split(' ')[0])
-        rid = self.uc.rentalBook(bid)
-        if rid == -1:
-            messageBox(self, '이미 대여중인 도서입니다.')
-            return
+        # bid = int(self.book_list.currentItem().text().split(' ')[0])
+        # rid = self.uc.rentalBook(bid)
+        # if rid == -1:
+        #     messageBox(self, '이미 대여중인 도서입니다.')
+        #     return
         self.renderRentalList()
         messageBox(self, '도서 대여 처리 되었습니다.')
         
     def clickedReturnBtn(self):
         rid = int(self.rental_list.currentItem().text().split(' ')[0])
-        flag = self.uc.returnBook(rid)
-        if flag:
-            self.renderRentalList()
-            messageBox(self, '도서 반납 처리 되었습니다.')
-        else:
-            messageBox(self, '도서 반납에 실패했습니다.')
+        # flag = self.uc.returnBook(rid)
+        # if flag:
+        #     self.renderRentalList()
+        #     messageBox(self, '도서 반납 처리 되었습니다.')
+        # else:
+        #     messageBox(self, '도서 반납에 실패했습니다.')
     
     def clickedSearchBtn(self):
         keyword = self.search_edit.text()
@@ -221,7 +255,7 @@ class MainScreen(QDialog):
         self.search_edit.setText('')
         
     def clickedDeleteBtn(self):
-        if self.user['manager']:
+        if self.user.role == 'MANAGER':
             bid = int(self.book_list.currentItem().text().split(' ')[0])
             BookController(bid).deleteBook()
             self.renderBookList()
@@ -230,7 +264,7 @@ class MainScreen(QDialog):
             messageBox(self, "관리자만 이용 가능합니다.")
 
     def clickedInsertBtn(self):
-        if self.user['manager']:
+        if self.user.role == 'MANAGER':
             name = self.book_name_edit.text()
             author = self.book_author_edit.text()
             isbn = self.book_isbn_edit.text()
@@ -248,43 +282,43 @@ class MainScreen(QDialog):
         self.book_location_edit.clear()
     
     def clickedSearchUserBtn(self):
-        self.user_list.clear()
-        if self.user['manager']:
-            keyword = self.user_edit.text()
-            user_list = self.uc.getUserList(keyword=keyword)
-            for i, v in enumerate(user_list):
-                self.user_list.addItem(f"{v[0]} {v[1]} - {v[5]} - {v[3]}")
-        else:
-            messageBox(self, "관리자만 이용 가능합니다.")
+        # self.user_list.clear()
+        # if self.user.role == 'MANAGER':
+        #     keyword = self.user_edit.text()
+        #     user_list = self.uc.getUserList(keyword=keyword)
+        #     for i, v in enumerate(user_list):
+        #         self.user_list.addItem(f"{v[0]} {v[1]} - {v[5]} - {v[3]}")
+        # else:
+        #     messageBox(self, "관리자만 이용 가능합니다.")
         self.user_edit.setText('')
         
     def clickedSearchRentalBtn(self):
-        self.no_return_list.clear()
-        if self.user['manager']:
-            keyword = self.no_return_edit.text()
-            rid_list = [i for i in RentalController().getRentalList()]
-            if keyword == '':
-                for i, v in enumerate(rid_list):
-                    book_name = BookController(v[1]).getBookAttr()['name']
-                    user_name = UserController(v[2]).getUserAttr()['name']
-                    self.no_return_list.addItem(f"{v[0]} {book_name} - {user_name} / {v[3]}")
-            else:
-                bid_list = [i[0] for i in BookController().getBookList(keyword=keyword)]
-                uid_list = [i[0] for i in UserController().getUserList(keyword=keyword)]
-                for i, v in enumerate(rid_list):
-                    rental = RentalController(v[0]).getRentalAttr()
-                    for i, bid in enumerate(bid_list):
-                        if rental['bid'] == bid:
-                            book_name = BookController(bid).getBookAttr()['name']
-                            user_name = UserController(rental['uid']).getUserAttr()['name']
-                            self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
-                    for i, uid in enumerate(uid_list):
-                        if rental['uid'] == uid:
-                            book_name = BookController(rental['bid']).getBookAttr()['name']
-                            user_name = UserController(uid).getUserAttr()['name']
-                            self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
-        else:
-            messageBox(self, "관리자만 이용 가능합니다.")
+        # self.no_return_list.clear()
+        # if self.user.role == 'MANAGER':
+        #     keyword = self.no_return_edit.text()
+        #     rid_list = [i for i in RentalController().getRentalList()]
+        #     if keyword == '':
+        #         for i, v in enumerate(rid_list):
+        #             book_name = BookController(v[1]).getBookAttr()['name']
+        #             user_name = UserController(v[2]).getUserAttr()['name']
+        #             self.no_return_list.addItem(f"{v[0]} {book_name} - {user_name} / {v[3]}")
+        #     else:
+        #         bid_list = [i[0] for i in BookController().getBookList(keyword=keyword)]
+        #         uid_list = [i[0] for i in UserController().getUserList(keyword=keyword)]
+        #         for i, v in enumerate(rid_list):
+        #             rental = RentalController(v[0]).getRentalAttr()
+        #             for i, bid in enumerate(bid_list):
+        #                 if rental['bid'] == bid:
+        #                     book_name = BookController(bid).getBookAttr()['name']
+        #                     user_name = UserController(rental['uid']).getUserAttr()['name']
+        #                     self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
+        #             for i, uid in enumerate(uid_list):
+        #                 if rental['uid'] == uid:
+        #                     book_name = BookController(rental['bid']).getBookAttr()['name']
+        #                     user_name = UserController(uid).getUserAttr()['name']
+        #                     self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
+        # else:
+        #     messageBox(self, "관리자만 이용 가능합니다.")
         self.no_return_edit.setText('')
 
     def detailBookInfo(self, bid):
@@ -298,20 +332,20 @@ class MainScreen(QDialog):
             self.book_rental_label.setText(f"대여 상태 : 대여 가능")
         self.book_location_label.setText(f"위치 : {book_attr['location']}")
         
-    def detailUserInfo(self, uid):
-        user_attr = UserController(uid).getUserAttr()
-        self.user_name_label.setText(f"이름 : {user_attr['name']}")
-        self.user_email_label.setText(f"이메일 : {user_attr['email']}")
-        self.user_phone_label.setText(f"번호 : {user_attr['phone']}")
-        self.user_address_label.setText(f"주소 : {user_attr['address']}")
+    def detailUserInfo(self):
+        self.user_name_label.setText(f"이름 : {self.user.name}")
+        self.user_email_label.setText(f"이메일 : {self.user.email}")
+        self.user_phone_label.setText(f"번호 : {self.user.phone}")
+        self.user_address_label.setText(f"주소 : {self.user.address}")
         
     def detailRentalInfo(self, rid):
-        rental = RentalController(rid).getRentalAttr()
-        book = BookController(rental['bid']).getBookAttr()
-        user = UserController(rental['uid']).getUserAttr()
-        self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
-        self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
-        self.no_return_user_label.setText(f"대여자 : {user['name']}")
+        # rental = RentalController(rid).getRentalAttr()
+        # book = BookController(rental['bid']).getBookAttr()
+        # user = UserController(rental['uid']).getUserAttr()
+        # self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
+        # self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
+        # self.no_return_user_label.setText(f"대여자 : {user['name']}")
+        return
  
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
-from .User import _User
+from .User import User
 from DBPkg.DBManager import _DBManager
 from util.IDManager import getID, upID
 
 
-class UserDBManager(_DBManager, _User):
+class UserDBManager(_DBManager, User):
     
     def __init__(self):
         self.DB_PATH: str = 'DBPkg/csv/UserDB.csv'

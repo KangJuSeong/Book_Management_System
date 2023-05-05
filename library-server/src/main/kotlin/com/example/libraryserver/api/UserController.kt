@@ -9,6 +9,7 @@ import com.example.libraryserver.util.MsgResponse
 import com.example.libraryserver.util.Response
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -30,6 +31,11 @@ class UserController(
     fun signup(@RequestBody data: UserDto): Response<*> {
         val user: UserResDto = userService.signup(data)?: return MsgResponse(HttpStatus.BAD_REQUEST, "회원가입 실패")
         return DataResponse(HttpStatus.OK, "회원가입 성공", user)
+    }
+
+    @GetMapping("/info/{id}")
+    fun info(@PathVariable("id") id: String): Response<*> {
+        return DataResponse(HttpStatus.OK, "회원 정보 가져오기", userService.info(id.toInt()))
     }
 
     @GetMapping("/revers/users")
