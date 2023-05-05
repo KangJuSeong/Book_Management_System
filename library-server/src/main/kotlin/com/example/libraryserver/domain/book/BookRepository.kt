@@ -8,6 +8,7 @@ import com.linecorp.kotlinjdsl.spring.data.listQuery
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface BookRepository: JpaRepository<Book, Long>, BookJdslRepository {
+    fun findById(id: Int): Book?
 }
 
 interface BookJdslRepository {

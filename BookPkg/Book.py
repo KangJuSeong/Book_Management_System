@@ -1,32 +1,9 @@
-class _Book:
-    def __init__(self, bid: int, name: str, author: str, isbn: int, rentaling: bool, location: str):
-        self.__bid: int = bid
-        self.__name: str = name
-        self.__author: str = author
-        self.__isbn: int = isbn
-        self.__rentaling: bool = rentaling
-        self.__location: str = location
-    
-    def getBid(self) -> int:
-        return self.__bid
+class Book:
+    def __init__(self, bid: int, name: str, author: str, isbn: int, isRental: bool, location: str):
+        self.bid: int = bid
+        self.name: str = name
+        self.author: str = author
+        self.isbn: int = isbn
+        self.isRental: bool = isRental
+        self.location: str = location
 
-    def getName(self) -> str:
-        return self.__name
-
-    def getAuthor(self) -> str:
-        return self.__author
-
-    def getIsbn(self) -> int:
-        return self.__isbn
-
-    def getRentaling(self) -> bool:
-        return self.__rentaling
-
-    def getLocation(self) -> str:
-        return self.__location
-    
-    def onRentaling(self) -> None:
-        self.__rentaling = True
-    
-    def offRentaling(self) -> None:
-        self.__rentaling = False

@@ -13,4 +13,6 @@ class BookService(
     fun findAll(): List<BookResDto> = bookRepository.findAll().map {it.toResDto()}
 
     fun search(keyword: String): List<BookResDto> = bookRepository.findBooks(keyword).map {it.toResDto()}
+
+    fun info(id: Int): BookResDto? = bookRepository.findById(id)?.toResDto()
 }
