@@ -46,4 +46,18 @@ class User(
             password = this.password,
             role = this.role
         )
+    fun toResDto(): UserResDto =
+        UserResDto(
+            id = this.id!!,
+            name = this.name,
+            address = this.address,
+            phone = this.phone,
+            email = this.email,
+            role = this.role
+        )
+}
+
+enum class Role {
+    USER,
+    MANAGER
 }

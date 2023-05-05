@@ -18,3 +18,16 @@ data class UserDto(
             password = this.password
         )
 }
+
+data class LoginDto(
+    val email: String,
+    val password: String
+)
+data class UserResDto(
+    val id: Long,
+    val name: String,
+    val address: String,
+    val phone: String,
+    val email: String,
+    val role: Role,
+)

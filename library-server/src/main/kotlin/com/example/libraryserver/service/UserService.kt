@@ -1,8 +1,6 @@
 package com.example.libraryserver.service
 
-import com.example.libraryserver.domain.user.User
-import com.example.libraryserver.domain.user.UserDto
-import com.example.libraryserver.domain.user.UserRepository
+import com.example.libraryserver.domain.user.*
 import org.springframework.stereotype.Service
 import java.util.NoSuchElementException
 
@@ -11,8 +9,15 @@ import java.util.NoSuchElementException
 class UserService(
     private val userRepository: UserRepository
 ) {
-    fun findAll(): MutableList<User> = userRepository.findAll()
-    fun login(email: String, password: String): UserDto? {
-        return userRepository.findByEmailAndPassword(email, password)?.toDto()
+
+    fun findAll(): List<UserDto> = userRepository.findAll().map { it.toDto() }
+
+    fun login(data: LoginDto): UserResDto? {
+        return userRepository.findByEmailAndPassword(data.email, data.password)?.toResDto()
+    }
+
+    fun signup(data: UserDto): UserResDto? {
+        userRepository.findByEmail(data.email)?: return userRepository.save(data.toEntity()).toResDto()
+        return null
     }
 }
