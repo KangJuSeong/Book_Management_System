@@ -8,6 +8,7 @@ import com.example.libraryserver.util.DataResponse
 import com.example.libraryserver.util.MsgResponse
 import com.example.libraryserver.util.Response
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,5 +30,11 @@ class UserController(
     fun signup(@RequestBody data: UserDto): Response<*> {
         val user: UserResDto = userService.signup(data)?: return MsgResponse(HttpStatus.BAD_REQUEST, "회원가입 실패")
         return DataResponse(HttpStatus.OK, "회원가입 성공", user)
+    }
+
+    @GetMapping("/revers/users")
+    fun reversUsers(): Response<*> {
+        val users: List<UserDto> = userService.reversOrderUsers()
+        return DataResponse(HttpStatus.OK, "jdsl 테스트", users)
     }
 }
