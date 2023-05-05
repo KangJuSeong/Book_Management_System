@@ -30,7 +30,8 @@ class BookController(
 
     @GetMapping("/info/{id}")
     fun info(@PathVariable id: String): Response<*> {
-        val book: BookResDto = bookService.info(id.toInt())?: return MsgResponse(HttpStatus.BAD_REQUEST, "도서 정보 조회 실패")
+        val book: BookResDto = bookService.info(id.toInt())?:
+        return MsgResponse(HttpStatus.BAD_REQUEST, "도서 정보 조회 실패")
         return DataResponse(HttpStatus.OK, "도서 정보 조회 성공", book)
     }
 }

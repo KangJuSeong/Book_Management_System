@@ -2,11 +2,12 @@ package com.example.libraryserver.domain.rental
 
 import com.example.libraryserver.domain.book.Book
 import com.example.libraryserver.domain.user.User
+import java.time.LocalDateTime
 
 data class RentalDto(
-    var book: Book,
-    var user: User,
-    var rental: Boolean
+    val book: Book,
+    val user: User,
+    val rental: Boolean
 ) {
     fun toEntity(): Rental =
         Rental(
@@ -15,3 +16,11 @@ data class RentalDto(
             rental = this.rental
         )
 }
+
+data class RentalResDto(
+    val id: Long,
+    val book: Book,
+    val user: User,
+    val rental: Boolean,
+    val createdAt: LocalDateTime
+)

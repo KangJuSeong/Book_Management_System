@@ -36,4 +36,19 @@ class Rental(
 
     override fun toString(): String =
         "Book : ${this.book.id}, User: ${this.user.id}, ${this.rental}"
+
+    fun toDto() =
+        RentalDto(
+            book = this.book,
+            user = this.user,
+            rental = this.rental
+        )
+    fun toResDto() =
+        RentalResDto(
+            id = this.id!!,
+            book = this.book,
+            user = this.user,
+            rental = this.rental,
+            createdAt = this.createdAt
+        )
 }
