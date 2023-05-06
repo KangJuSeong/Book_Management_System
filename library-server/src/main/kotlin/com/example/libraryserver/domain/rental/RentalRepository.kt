@@ -2,6 +2,7 @@ package com.example.libraryserver.domain.rental
 
 import com.example.libraryserver.domain.book.Book
 import com.example.libraryserver.domain.user.User
+import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
@@ -30,6 +31,7 @@ class RentalJdslRepositoryImpl(
             from(entity(Rental::class))
             fetch(Rental::book)
             fetch(Rental::user)
+            where(column(Rental::rental).equal(true))
         }
     }
 
