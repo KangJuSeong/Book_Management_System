@@ -78,7 +78,7 @@ class Generator(
             phone = faker.phoneNumber.phoneNumber(),
             email = faker.internet.email(),
             password = "1234",
-            role = Role.MANAGER
+            role = Role.USER
         ).toEntity()
 
     fun generateBook(): Book =

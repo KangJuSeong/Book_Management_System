@@ -33,7 +33,7 @@ class UserController(
         return DataResponse(HttpStatus.OK, "회원가입 성공", user)
     }
 
-    @GetMapping("/info/{id}")
+    @GetMapping("/{id}")
     fun info(@PathVariable("id") id: String): Response<*> {
         return DataResponse(HttpStatus.OK, "회원 정보 가져오기", userService.info(id.toInt()))
     }

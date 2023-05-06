@@ -24,3 +24,8 @@ data class RentalResDto(
     val rental: Boolean,
     val createdAt: LocalDateTime
 )
+
+data class RentalReqDto(
+    val bookId: Int,
+    val userId: Int
+)

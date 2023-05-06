@@ -173,9 +173,8 @@ class MainScreen(QDialog):
     def __init__(self, uid):
         super().__init__()
         loadUi(os.getcwd() + "/UI/MainScreen.ui", self)
-        print(uid)
         self.req = MyRequests()
-        status, res, data = self.req.reqGet(f"user/info/{uid}")
+        status, res, data = self.req.reqGet(f"user/{uid}")
         self.user = User(
             data.get('id'),
             data.get('name'),
@@ -212,13 +211,14 @@ class MainScreen(QDialog):
 
     def renderRentalList(self):
         self.rental_list.clear()
-        # for i, v in enumerate(self.uc.getUserRentalList()):
-        #     book = BookController(bid=v['bid']).getBookAttr()
-        #     self.rental_list.addItem(f"{v['rid']} {book['name']} - {book['author']} - {book['isbn']} / {v['date']}")
+        status, res, data = self.req.reqGet(f"rental/list/{self.user.uid}")
+        for i, v in enumerate(data):
+            book = v.get('book')
+            self.rental_list.addItem(f"{v['id']} {book['name']} - {book['author']} - {book['isbn']} / {v['createdAt']}")
 
     def clickedBookItem(self):
         bid = int(self.book_list.currentItem().text().split(' ')[0])
-        status, res, data = self.req.reqGet(f"book/info/{bid}")
+        status, res, data = self.req.reqGet(f"book/{bid}")
         self.book_name_label.setText(f"책 이름 : {data['name']}")
         self.book_author_label.setText(f"저자 : {data['author']}")
         self.book_isbn_label.setText(f"ISBN : {data['isbn']}")
@@ -234,25 +234,44 @@ class MainScreen(QDialog):
         self.search_edit.setText('')
 
     def clickedRentalItem(self):
-        # rid = int(self.rental_list.currentItem().text().split(' ')[0])
-        # bid = RentalController(rid).getRentalAttr()['bid']
-        # self.detailBookInfo(bid)
-        return 
+        rid = int(self.rental_list.currentItem().text().split(' ')[0])
+        status, res, data = self.req.reqGet(f"rental/{rid}")
+        data = data['book']
+        self.book_name_label.setText(f"책 이름 : {data['name']}")
+        self.book_author_label.setText(f"저자 : {data['author']}")
+        self.book_isbn_label.setText(f"ISBN : {data['isbn']}")
+        if data['isRental']:
+            self.book_rental_label.setText(f"대여 상태 : 대여 중")
+        else:
+            self.book_rental_label.setText(f"대여 상태 : 대여 가능")
+        self.book_location_label.setText(f"위치 : {data['location']}")
     
     def clickedUserItem(self):
         uid = int(self.user_list.currentItem().text().split(' ')[0])
-        self.detailUserInfo()
+        # self.user_name_label.setText(f"이름 : {self.user.name}")
+        # self.user_email_label.setText(f"이메일 : {self.user.email}")
+        # self.user_phone_label.setText(f"번호 : {self.user.phone}")
+        # self.user_address_label.setText(f"주소 : {self.user.address}")
         
     def clikcedNoReturnItem(self):
         rid = int(self.no_return_list.currentItem().text().split(' ')[0])
-        self.detailRentalInfo(rid)
+        # rental = RentalController(rid).getRentalAttr()
+        # book = BookController(rental['bid']).getBookAttr()
+        # user = UserController(rental['uid']).getUserAttr()
+        # self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
+        # self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
+        # self.no_return_user_label.setText(f"대여자 : {user['name']}")
     
     def clickedRentalBtn(self):
-        # bid = int(self.book_list.currentItem().text().split(' ')[0])
-        # rid = self.uc.rentalBook(bid)
-        # if rid == -1:
-        #     messageBox(self, '이미 대여중인 도서입니다.')
-        #     return
+        bid = int(self.book_list.currentItem().text().split(' ')[0])
+        body = {
+            "bookId": bid,
+            "userId": self.user.uid
+        }
+        status, res, data = self.req.reqPost("rental", body)
+        if res.get('status') == 'BAD_REQUEST':
+            messageBox(self, '이미 대여중인 도서입니다.')
+            return
         self.renderRentalList()
         messageBox(self, '도서 대여 처리 되었습니다.')
         
@@ -334,21 +353,6 @@ class MainScreen(QDialog):
         # else:
         #     messageBox(self, "관리자만 이용 가능합니다.")
         self.no_return_edit.setText('')
-        
-    def detailUserInfo(self):
-        self.user_name_label.setText(f"이름 : {self.user.name}")
-        self.user_email_label.setText(f"이메일 : {self.user.email}")
-        self.user_phone_label.setText(f"번호 : {self.user.phone}")
-        self.user_address_label.setText(f"주소 : {self.user.address}")
-        
-    def detailRentalInfo(self, rid):
-        # rental = RentalController(rid).getRentalAttr()
-        # book = BookController(rental['bid']).getBookAttr()
-        # user = UserController(rental['uid']).getUserAttr()
-        # self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
-        # self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
-        # self.no_return_user_label.setText(f"대여자 : {user['name']}")
-        return
  
 
 if __name__ == "__main__":
