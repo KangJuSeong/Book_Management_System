@@ -1,5 +1,10 @@
 # 도서 관리 시스템
 
+## 개발 환경
+
+- Backed - JDK17 / Kotlin / SpringBoot3 / MySQL
+- FrontEnd - Python3 / PyQt5
+
 ## System Description
   
 1. Description
@@ -161,6 +166,335 @@
     |Flow of activities|Actor : 1. 관리자로 접속한다. 2. 미 반납 도서 버튼을 클릭한다. 3. 미 반납 도서 목록에서 원하는 도서를 선택한다. 4. 해당 도서를 대여중인 이용자의 정보가 출력된다. System : 2.1. 미 반납 도서 데이터를 가져와서 목록에 출력한다. 4.1. 해당 도서를 대여 중인 이용자의 정보를 가져와서 출력한다.
     |Exception conditions|1. 이용자가 미 반납 도서 버튼을 클릭한다. -> 해당 기능은 관리자만 접근 가능합니다. 라는 팝업창을 출력한다.
 
+## API Docs
+
+- `Response Format`
+
+  - 응답 템플릿
+
+    ```JSON
+    {
+        "status": "OK(BAD_REQUEST)",
+        "msg": "msg",
+        "data": data
+    }
+    ```
+
+### 1. User
+
+- `POST` **/user/signup**
+  
+  - 회원가입 요청
+  - `Request Body`
+
+    ```JSON
+    {
+        "name": "string",
+        "address": "string",
+        "phone": "string",
+        "email": "string",
+        "role": "USER",
+        "password": "string"
+    }
+    ```
+
+- `POST` **/user/login**
+
+  - 로그인 요청
+  - `Request Body`
+
+    ```JSON
+    {
+        "email": "string",
+        "password": "string"
+    }
+    ```
+
+- `GET` **/user/{id}**
+
+  - 유저 정보 요청
+  - `Response Data`
+
+    ```JSON
+    "data": {
+        "id": 1,
+        "name": "string",
+        "address": "string",
+        "phone": "string",
+        "email": "string",
+        "role": "USER"
+    }
+    ```
+
+- `GET` **/user/search?keyword=keyword**
+
+  - 유저 정보 검색 요청
+  - `Response Data`
+
+    ```JSON
+    "data": [
+        {
+            "id": 1,
+            "name": "string",
+            "address": "string",
+            "phone": "string",
+            "email": "string",
+            "role": "USER"
+        },
+        {
+            "id": 2,
+            "name": "string",
+            "address": "string",
+            "phone": "string",
+            "email": "string",
+            "role": "MANAGER"
+        }
+    ]
+    ```
+
+### 2. Book
+
+- `POST` **/book**
+
+  - 도서 등록 요청
+  - `Request Body`
+
+    ```JSON
+    {
+        "name": "string",
+        "author": "string",
+        "isbn": "string",
+        "isRental": true,
+        "location": "string"
+    }
+    ```
+
+- `GET` **/book/{id}**
+
+  - 도서 정보 요청
+  - `Respose Data`
+
+    ```JSON
+    "data": {
+        "id": 1,
+        "name": "The Waste Land",
+        "author": "Dane Rosenbaum CPA",
+        "isbn": "979122937401",
+        "isRental": true,
+        "location": "B000GWKIMC"
+    }
+    ```
+
+- `DELETE` **/book/{id}**
+  - 도서 제거 요청
+
+- `GET` **/book/search?keyword=keyword**
+
+  - 도서 검색 정보 요청
+  - `Response Data`
+
+    ```JSON
+    "data": [
+        {
+        "id": 1,
+        "name": "The Waste Land",
+        "author": "Dane Rosenbaum CPA",
+        "isbn": "979122937401",
+        "isRental": true,
+        "location": "B000GWKIMC"
+        },
+        {
+        "id": 2,
+        "name": "Mother Night",
+        "author": "Rep. Paris Grimes",
+        "isbn": "978727062425",
+        "isRental": true,
+        "location": "B0002GMWEO"
+        }
+    ]
+    ```
+
+- `GET` **/book/list**
+
+  - 도서 정보 목록 요청
+  - `Response Data`
+
+    ```JSON
+    "data": [
+        {
+        "id": 1,
+        "name": "The Waste Land",
+        "author": "Dane Rosenbaum CPA",
+        "isbn": "979122937401",
+        "isRental": true,
+        "location": "B000GWKIMC"
+        },
+        {
+        "id": 2,
+        "name": "Mother Night",
+        "author": "Rep. Paris Grimes",
+        "isbn": "978727062425",
+        "isRental": true,
+        "location": "B0002GMWEO"
+        }
+    ]
+    ```
+
+### 3. Rental
+
+- `GET` **/rental/{id}**
+
+  - 대여 정보 요청
+  - 도서를 대여한 유저와 도서 정보 반환
+  - `Response Data`
+
+    ```JSON
+    "data": {
+        "id": 1,
+        "book": {
+        "name": "The Waste Land",
+        "author": "Dane Rosenbaum CPA",
+        "isbn": "979122937401",
+        "isRental": true,
+        "location": "B000GWKIMC",
+        "id": 1,
+        "createdAt": "2023-05-07T00:21:06.019605",
+        "updatedAt": "2023-05-07T00:21:06.019605"
+        },
+        "user": {
+        "name": "Moses Bernier",
+        "address": "Hoegermouth",
+        "phone": "(939) 122-8310 x70122",
+        "email": "msgr.bud.balistreri@gmail.com",
+        "role": "USER",
+        "password": "1234",
+        "id": 1,
+        "createdAt": "2023-05-07T00:21:05.90454",
+        "updatedAt": "2023-05-07T00:21:05.90454"
+        },
+        "rental": true,
+        "createdAt": "2023-05-07T00:21:06.076382"
+    }
+    ```
+
+- `PUT` **/rental/{id}**
+
+  - 도서 반납 요청
+  - 대여 정보에서 rental 필드를 false로 변경
+
+- `POST` **/rental**
+
+  - 도서 대여 요청
+  - `Resonpose Body`
+
+    ```JSON
+    {
+        "bookId": 0,
+        "userId": 0
+    }
+    ```
+
+- `GET` **/rental/search?keyword=keyword**
+
+  - 대여 정보 검색
+  - 키워드는 도서명과 도서 대여자를 상대로 검색
+  - `Response Data`
+
+    ```JSON
+      "data": [
+        {
+        "id": 1,
+        "book": {
+            "name": "The Waste Land",
+            "author": "Dane Rosenbaum CPA",
+            "isbn": "979122937401",
+            "isRental": false,
+            "location": "B000GWKIMC",
+            "id": 1,
+            "createdAt": "2023-05-07T00:21:06.019605",
+            "updatedAt": "2023-05-07T00:53:44.103352"
+        },
+        "user": {
+            "name": "Moses Bernier",
+            "address": "Hoegermouth",
+            "phone": "(939) 122-8310 x70122",
+            "email": "msgr.bud.balistreri@gmail.com",
+            "role": "USER",
+            "password": "1234",
+            "id": 1,
+            "createdAt": "2023-05-07T00:21:05.90454",
+            "updatedAt": "2023-05-07T00:21:05.90454"
+        },
+        "rental": false,
+        "createdAt": "2023-05-07T00:21:06.076382"
+        },
+        {
+        "id": 2,
+        "book": {
+            "name": "Carrion Comfort",
+            "author": "Albert Gorczany",
+            "isbn": "979889921958",
+            "isRental": true,
+            "location": "B0000V3W9U",
+            "id": 2,
+            "createdAt": "2023-05-07T00:21:06.032189",
+            "updatedAt": "2023-05-07T00:21:06.032189"
+        },
+        "user": {
+            "name": "Wilmer Ryan",
+            "address": "East Despina",
+            "phone": "1-782-242-7053",
+            "email": "jestine.mclaughlin@hotmail.com",
+            "role": "USER",
+            "password": "1234",
+            "id": 2,
+            "createdAt": "2023-05-07T00:21:05.952193",
+            "updatedAt": "2023-05-07T00:21:05.952193"
+        },
+        "rental": true,
+        "createdAt": "2023-05-07T00:21:06.080561"
+        }
+    ]
+    ```
+
+- `GET` **/renatl/list/{userId}**
+
+  - 도서 대여 정보 요청
+  - user.role = MANAGER -> 전제 대여 정보 반환
+  - user.role = USER -> 해당 유저의 대여 정보 반환
+  - `Response Body`
+
+    ```JSON
+    "data": [
+        {
+        "id": 3,
+        "book": {
+            "name": "Mother Night",
+            "author": "Rep. Paris Grimes",
+            "isbn": "978727062425",
+            "isRental": true,
+            "location": "B0002GMWEO",
+            "id": 3,
+            "createdAt": "2023-05-07T00:21:06.038446",
+            "updatedAt": "2023-05-07T00:21:06.038446"
+        },
+        "user": {
+            "name": "Russel Rutherford",
+            "address": "Susannborough",
+            "phone": "571-278-6796",
+            "email": "esteban.torp.do@gmail.com",
+            "role": "USER",
+            "password": "1234",
+            "id": 3,
+            "createdAt": "2023-05-07T00:21:05.957864",
+            "updatedAt": "2023-05-07T00:21:05.957864"
+        },
+        "rental": true,
+        "createdAt": "2023-05-07T00:21:06.083989"
+        }
+    ]
+    ```
+
 ## Use Case Diagram
 
 ![use_case_diagram](./readme_img/usecase_diagram.jpg)
@@ -170,4 +504,5 @@
 ![class_diagram](./readme_img/class_diagram.png)
 
 ## Service
+
 ![service_main](./readme_img/main_img.jpg)
