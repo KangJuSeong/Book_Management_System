@@ -135,7 +135,7 @@ class SignUpScreen(QDialog):
                         "email": self.email,
                         "password": self.pw
                     }
-                    status, res = self.req.reqPost("user/signup", body)
+                    status, res, data = self.req.reqPost("user/signup", body)
                 else:
                     messageBox(self, "관리자 코드가 잘못되었습니다.")
             else:
@@ -147,8 +147,8 @@ class SignUpScreen(QDialog):
                         "email": self.email,
                         "password": self.pw
                     }
-                status, res = self.req.reqPost("user/signup", body)
-        if status == 200 and res.get('status') == 'OK':
+                status, res, data = self.req.reqPost("user/signup", body)
+        if res.get('status') == 'OK':
             messageBox(self, "회원가입 성공")
             self.openLoginWindow()
         else:
@@ -306,12 +306,25 @@ class MainScreen(QDialog):
         else:
             messageBox(self, "관리자만 이용 가능합니다.")
     
+    def clickedSearchUserBtn(self):
+        self.user_list.clear()
+        if self.user.role == 'MANAGER':
+            keyword = self.user_edit.text()
+            status, res, data = self.req.reqGet(f"user/search?keyword={keyword}")
+            print(data)
+            for i, v in enumerate(data):
+                self.user_list.addItem(f"{v['id']} {v['name']} - {v['email']} - {v['phone']}")
+        else:
+            messageBox(self, "관리자만 이용 가능합니다.")
+        self.user_edit.setText('')
+        
     def clickedUserItem(self):
         uid = int(self.user_list.currentItem().text().split(' ')[0])
-        # self.user_name_label.setText(f"이름 : {self.user.name}")
-        # self.user_email_label.setText(f"이메일 : {self.user.email}")
-        # self.user_phone_label.setText(f"번호 : {self.user.phone}")
-        # self.user_address_label.setText(f"주소 : {self.user.address}")
+        status, res, data = self.req.reqGet(f"user/{uid}")
+        self.user_name_label.setText(f"이름 : {data['name']}")
+        self.user_email_label.setText(f"이메일 : {data['email']}")
+        self.user_phone_label.setText(f"번호 : {data['phone']}")
+        self.user_address_label.setText(f"주소 : {data['address']}")
         
     def clikcedNoReturnItem(self):
         rid = int(self.no_return_list.currentItem().text().split(' ')[0])
@@ -321,17 +334,6 @@ class MainScreen(QDialog):
         # self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
         # self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
         # self.no_return_user_label.setText(f"대여자 : {user['name']}")
-    
-    def clickedSearchUserBtn(self):
-        # self.user_list.clear()
-        # if self.user.role == 'MANAGER':
-        #     keyword = self.user_edit.text()
-        #     user_list = self.uc.getUserList(keyword=keyword)
-        #     for i, v in enumerate(user_list):
-        #         self.user_list.addItem(f"{v[0]} {v[1]} - {v[5]} - {v[3]}")
-        # else:
-        #     messageBox(self, "관리자만 이용 가능합니다.")
-        self.user_edit.setText('')
         
     def clickedSearchRentalBtn(self):
         # self.no_return_list.clear()

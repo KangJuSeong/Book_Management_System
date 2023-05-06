@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -37,4 +38,11 @@ class UserController(
     fun info(@PathVariable("id") id: String): Response<*> {
         return DataResponse(HttpStatus.OK, "회원 정보 가져오기", userService.info(id.toInt()))
     }
+
+    @GetMapping("/search")
+    fun search(@RequestParam keyword: String): Response<*> {
+        print(keyword)
+        return DataResponse(HttpStatus.OK, "회원 검색 성공", userService.search("%$keyword%"))
+    }
+
 }

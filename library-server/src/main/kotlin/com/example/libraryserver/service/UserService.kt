@@ -18,4 +18,6 @@ class UserService(
     }
 
     fun info(id: Int): UserResDto = userRepository.findById(id).toResDto()
+
+    fun search(keyword: String): List<UserResDto> = userRepository.findUsers(keyword).map { it.toResDto() }
 }
