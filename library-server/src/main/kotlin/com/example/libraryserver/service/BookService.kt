@@ -15,4 +15,10 @@ class BookService(
     fun search(keyword: String): List<BookResDto> = bookRepository.findBooks(keyword).map {it.toResDto()}
 
     fun info(id: Int): BookResDto? = bookRepository.findById(id)?.toResDto()
+
+    fun create(bookDto: BookDto): BookResDto {
+        return bookRepository.save(bookDto.toEntity()).toResDto()
+    }
+
+    fun delete(id: Long): Unit = bookRepository.deleteById(id)
 }

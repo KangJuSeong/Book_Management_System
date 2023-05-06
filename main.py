@@ -9,8 +9,9 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-from UserPkg.User import User
-from BookPkg.Book import Book
+from domain.User import User
+from domain.Book import Book
+from domain.Rental import Rental
 
 
 
@@ -245,23 +246,7 @@ class MainScreen(QDialog):
         else:
             self.book_rental_label.setText(f"대여 상태 : 대여 가능")
         self.book_location_label.setText(f"위치 : {data['location']}")
-    
-    def clickedUserItem(self):
-        uid = int(self.user_list.currentItem().text().split(' ')[0])
-        # self.user_name_label.setText(f"이름 : {self.user.name}")
-        # self.user_email_label.setText(f"이메일 : {self.user.email}")
-        # self.user_phone_label.setText(f"번호 : {self.user.phone}")
-        # self.user_address_label.setText(f"주소 : {self.user.address}")
         
-    def clikcedNoReturnItem(self):
-        rid = int(self.no_return_list.currentItem().text().split(' ')[0])
-        # rental = RentalController(rid).getRentalAttr()
-        # book = BookController(rental['bid']).getBookAttr()
-        # user = UserController(rental['uid']).getUserAttr()
-        # self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
-        # self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
-        # self.no_return_user_label.setText(f"대여자 : {user['name']}")
-    
     def clickedRentalBtn(self):
         bid = int(self.book_list.currentItem().text().split(' ')[0])
         body = {
@@ -281,39 +266,61 @@ class MainScreen(QDialog):
         if res.get('status') == 'OK':
             self.renderRentalList()
             messageBox(self, '도서 반납이 완료되었습니다.')
+            self.renderRentalList()
         else:
             messageBox(self, '이미 반납된 도서입니다.')
 
-
-        
-    def clickedDeleteBtn(self):
-        # if self.user.role == 'MANAGER':
-        #     bid = int(self.book_list.currentItem().text().split(' ')[0])
-        #     BookController(bid).deleteBook()
-        #     self.renderBookList()
-        #     self.renderRentalList()
-        # else:
-        #     messageBox(self, "관리자만 이용 가능합니다.")
-        return
-
+    # Magaer 기능 #
     def clickedInsertBtn(self):
-        # if self.user.role == 'MANAGER':
-        #     name = self.book_name_edit.text()
-        #     author = self.book_author_edit.text()
-        #     isbn = self.book_isbn_edit.text()
-        #     location = self.book_location_edit.text()
-        #     if name == '' or author == '' or isbn == '' or location == '':
-        #         messageBox(self, "빈칸을 모두 채워주세요")
-        #         return
-        #     BookController().createBook(name, author, isbn, False, location)
-        #     self.renderBookList()
-        # else:
-        #     messageBox(self, "관리자만 이용 가능합니다.")
-        # self.book_name_edit.clear()
-        # self.book_author_edit.clear() 
-        # self.book_isbn_edit.clear()
-        # self.book_location_edit.clear()
-        return
+        if self.user.role == 'MANAGER':
+            name = self.book_name_edit.text()
+            author = self.book_author_edit.text()
+            isbn = self.book_isbn_edit.text()
+            location = self.book_location_edit.text()
+            if name == '' or author == '' or isbn == '' or location == '':
+                messageBox(self, "빈칸을 모두 채워주세요")
+                return
+            body = {
+                "name": name,
+                "author": author,
+                "isbn": isbn,
+                "isRental": False,
+                "location": location
+            }
+            status, res, data = self.req.reqPost("book", body)
+            if res.get('status') == 'OK':
+                self.renderBookList()
+        else:
+            messageBox(self, "관리자만 이용 가능합니다.")
+        self.book_name_edit.clear()
+        self.book_author_edit.clear() 
+        self.book_isbn_edit.clear()
+        self.book_location_edit.clear()
+
+    def clickedDeleteBtn(self):
+        if self.user.role == 'MANAGER':
+            bid = int(self.book_list.currentItem().text().split(' ')[0])
+            status, res, data = self.req.reqDel(f"book/{bid}")
+            self.renderBookList()
+            self.renderRentalList()
+        else:
+            messageBox(self, "관리자만 이용 가능합니다.")
+    
+    def clickedUserItem(self):
+        uid = int(self.user_list.currentItem().text().split(' ')[0])
+        # self.user_name_label.setText(f"이름 : {self.user.name}")
+        # self.user_email_label.setText(f"이메일 : {self.user.email}")
+        # self.user_phone_label.setText(f"번호 : {self.user.phone}")
+        # self.user_address_label.setText(f"주소 : {self.user.address}")
+        
+    def clikcedNoReturnItem(self):
+        rid = int(self.no_return_list.currentItem().text().split(' ')[0])
+        # rental = RentalController(rid).getRentalAttr()
+        # book = BookController(rental['bid']).getBookAttr()
+        # user = UserController(rental['uid']).getUserAttr()
+        # self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
+        # self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
+        # self.no_return_user_label.setText(f"대여자 : {user['name']}")
     
     def clickedSearchUserBtn(self):
         # self.user_list.clear()

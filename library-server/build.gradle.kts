@@ -9,9 +9,9 @@ plugins {
 }
 
 allOpen {
-    annotation("jakatra.persistence.Entity")
-    annotation("jakatra.persistence.Embeddable")
-    annotation("jakatra.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
 }
 
 group = "com.example"
