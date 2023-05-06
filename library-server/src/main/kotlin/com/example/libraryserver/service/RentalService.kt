@@ -47,11 +47,12 @@ class RentalService(
 
     fun update(id: Int): Boolean {
         val rental: Rental = rentalRepository.findById(id)
+        val book: Book = bookRepository.findById(rental.book.id!!.toInt())!!
         return if (rental.rental) {
             rental.rental = false
-            rental.book.isRental = false
+            book.isRental = false
             rentalRepository.save(rental)
-            bookRepository.save(rental.book)
+            bookRepository.save(book)
             true
         } else {
             false
