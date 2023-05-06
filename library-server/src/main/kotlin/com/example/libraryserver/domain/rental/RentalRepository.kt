@@ -12,6 +12,7 @@ import jakarta.persistence.TypedQuery
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface RentalRepository: JpaRepository<Rental, Long>, RentalJdslRepository {
+    fun findById(id: Int): Rental
 }
 
 interface RentalJdslRepository {
@@ -38,7 +39,10 @@ class RentalJdslRepositoryImpl(
             from(entity(Rental::class))
             fetch(Rental::book)
             fetch(Rental::user)
-            where(column(User::id).equal(userId))
+            whereAnd(
+                column(User::id).equal(userId),
+                column(Rental::rental).equal(true)
+            )
         }
     }
 

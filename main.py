@@ -277,12 +277,13 @@ class MainScreen(QDialog):
         
     def clickedReturnBtn(self):
         rid = int(self.rental_list.currentItem().text().split(' ')[0])
-        # flag = self.uc.returnBook(rid)
-        # if flag:
-        #     self.renderRentalList()
-        #     messageBox(self, '도서 반납 처리 되었습니다.')
-        # else:
-        #     messageBox(self, '도서 반납에 실패했습니다.')
+        status, res, data = self.req.reqPut(f"rental/{rid}")
+        if res.get('status') == 'OK':
+            self.renderRentalList()
+            messageBox(self, '도서 반납이 완료되었습니다.')
+        else:
+            messageBox(self, '이미 반납된 도서입니다.')
+
 
         
     def clickedDeleteBtn(self):

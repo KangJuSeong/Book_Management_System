@@ -38,4 +38,13 @@ class RentalController(
             }
         }
     }
+
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: String): Response<*> {
+        return if (rentalService.update(id.toInt())) {
+            MsgResponse(HttpStatus.OK, "반납 성공")
+        } else {
+            MsgResponse(HttpStatus.BAD_REQUEST, "반납 실패")
+        }
+    }
 }

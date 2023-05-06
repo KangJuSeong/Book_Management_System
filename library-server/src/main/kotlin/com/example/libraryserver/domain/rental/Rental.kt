@@ -21,12 +21,12 @@ class Rental(
     user: User,
     rental: Boolean
 ): AuditEntity() {
-    @OneToOne(targetEntity = Book::class)
+    @OneToOne(targetEntity = Book::class, fetch = FetchType.LAZY)
     @JoinColumn(name = "book")
     @OnDelete(action = OnDeleteAction.CASCADE)
     var book: Book = book
 
-    @OneToOne(targetEntity = User::class)
+    @OneToOne(targetEntity = User::class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: User = user

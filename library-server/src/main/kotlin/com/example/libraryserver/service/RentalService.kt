@@ -18,7 +18,6 @@ class RentalService(
     private val bookRepository: BookRepository
 ) {
     fun findAll(id: Int): List<RentalResDto>? {
-        val user: User = userRepository.getReferenceById(id.toLong())
         return when(userRepository.findById(id).role) {
             Role.MANAGER -> rentalRepository.findJoinAll().map {it.toResDto()}
             else -> rentalRepository.findJoinAll(id.toLong()).map { it.toResDto() }
@@ -43,6 +42,19 @@ class RentalService(
                 ).toEntity()
             )
             true
+        }
+    }
+
+    fun update(id: Int): Boolean {
+        val rental: Rental = rentalRepository.findById(id)
+        return if (rental.rental) {
+            rental.rental = false
+            rental.book.isRental = false
+            rentalRepository.save(rental)
+            bookRepository.save(rental.book)
+            true
+        } else {
+            false
         }
     }
 }
