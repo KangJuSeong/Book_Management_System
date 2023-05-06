@@ -47,4 +47,8 @@ class RentalController(
             MsgResponse(HttpStatus.BAD_REQUEST, "반납 실패")
         }
     }
+
+    @GetMapping("/search")
+    fun search(@RequestParam keyword: String): Response<*> =
+        DataResponse(HttpStatus.OK, "대여 검색 성공", rentalService.search("%$keyword%"))
 }

@@ -24,25 +24,24 @@ class UserController(
 ) {
     @PostMapping("/login")
     fun login(@RequestBody data: LoginDto): Response<*> {
-        val user: UserResDto = userService.login(data)?: return MsgResponse(HttpStatus.BAD_REQUEST, "로그인 실패")
+        val user: UserResDto = userService.login(data)?:
+        return MsgResponse(HttpStatus.BAD_REQUEST, "로그인 실패")
         return DataResponse(HttpStatus.OK, "로그인 성공", user)
     }
 
     @PostMapping("/signup")
     fun signup(@RequestBody data: UserDto): Response<*> {
-        val user: UserResDto = userService.signup(data)?: return MsgResponse(HttpStatus.BAD_REQUEST, "회원가입 실패")
+        val user: UserResDto = userService.signup(data)?:
+        return MsgResponse(HttpStatus.BAD_REQUEST, "회원가입 실패")
         return DataResponse(HttpStatus.OK, "회원가입 성공", user)
     }
 
     @GetMapping("/{id}")
-    fun info(@PathVariable("id") id: String): Response<*> {
-        return DataResponse(HttpStatus.OK, "회원 정보 가져오기", userService.info(id.toInt()))
-    }
+    fun info(@PathVariable("id") id: String): Response<*> =
+        DataResponse(HttpStatus.OK, "회원 정보 가져오기", userService.info(id.toInt()))
+
 
     @GetMapping("/search")
-    fun search(@RequestParam keyword: String): Response<*> {
-        print(keyword)
-        return DataResponse(HttpStatus.OK, "회원 검색 성공", userService.search("%$keyword%"))
-    }
-
+    fun search(@RequestParam keyword: String): Response<*> =
+        DataResponse(HttpStatus.OK, "회원 검색 성공", userService.search("%$keyword%"))
 }

@@ -20,6 +20,7 @@ interface RentalJdslRepository {
     fun findJoinAll(): List<Rental>
     fun findJoinAll(userId: Long): List<Rental>
     fun findJoinById(id: Int): Rental
+    fun findRentals(keyword: String): List<Rental>
 }
 
 class RentalJdslRepositoryImpl(
@@ -56,5 +57,18 @@ class RentalJdslRepositoryImpl(
             fetch(Rental::user)
             where(column(Rental::id).equal(id.toLong()))
         }.first()
+    }
+
+    override fun findRentals(keyword: String): List<Rental> {
+        return queryFactory.listQuery<Rental> {
+            select(entity(Rental::class))
+            from(entity(Rental::class))
+            fetch(Rental::book)
+            fetch(Rental::user)
+            whereOr(
+                column(Book::name).like(keyword),
+                column(User::name).like(keyword)
+            )
+        }
     }
 }

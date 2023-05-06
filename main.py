@@ -326,43 +326,25 @@ class MainScreen(QDialog):
         self.user_phone_label.setText(f"번호 : {data['phone']}")
         self.user_address_label.setText(f"주소 : {data['address']}")
         
+    def clickedSearchRentalBtn(self):
+        self.no_return_list.clear()
+        if self.user.role == 'MANAGER':
+            keyword = self.no_return_edit.text()
+            status, res, data = self.req.reqGet(f"rental/search?keyword={keyword}")
+            for i, v in enumerate(data):
+                self.no_return_list.addItem(f"{v['id']} {v['book']['name']} - {v['user']['name']} / {v['createdAt']}")
+        else:
+            messageBox(self, "관리자만 이용 가능합니다.")
+        self.no_return_edit.setText('')
+ 
     def clikcedNoReturnItem(self):
         rid = int(self.no_return_list.currentItem().text().split(' ')[0])
-        # rental = RentalController(rid).getRentalAttr()
-        # book = BookController(rental['bid']).getBookAttr()
-        # user = UserController(rental['uid']).getUserAttr()
-        # self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
-        # self.no_return_date_label.setText(f"대여 날짜 : {rental['date']}")
-        # self.no_return_user_label.setText(f"대여자 : {user['name']}")
-        
-    def clickedSearchRentalBtn(self):
-        # self.no_return_list.clear()
-        # if self.user.role == 'MANAGER':
-        #     keyword = self.no_return_edit.text()
-        #     rid_list = [i for i in RentalController().getRentalList()]
-        #     if keyword == '':
-        #         for i, v in enumerate(rid_list):
-        #             book_name = BookController(v[1]).getBookAttr()['name']
-        #             user_name = UserController(v[2]).getUserAttr()['name']
-        #             self.no_return_list.addItem(f"{v[0]} {book_name} - {user_name} / {v[3]}")
-        #     else:
-        #         bid_list = [i[0] for i in BookController().getBookList(keyword=keyword)]
-        #         uid_list = [i[0] for i in UserController().getUserList(keyword=keyword)]
-        #         for i, v in enumerate(rid_list):
-        #             rental = RentalController(v[0]).getRentalAttr()
-        #             for i, bid in enumerate(bid_list):
-        #                 if rental['bid'] == bid:
-        #                     book_name = BookController(bid).getBookAttr()['name']
-        #                     user_name = UserController(rental['uid']).getUserAttr()['name']
-        #                     self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
-        #             for i, uid in enumerate(uid_list):
-        #                 if rental['uid'] == uid:
-        #                     book_name = BookController(rental['bid']).getBookAttr()['name']
-        #                     user_name = UserController(uid).getUserAttr()['name']
-        #                     self.no_return_list.addItem(f"{rental['rid']} {book_name} - {user_name} / {rental['date']}")
-        # else:
-        #     messageBox(self, "관리자만 이용 가능합니다.")
-        self.no_return_edit.setText('')
+        status, res, data = self.req.reqGet(f"rental/{rid}")
+        book = data['book']
+        user = data['user']
+        self.no_return_book_name_label.setText(f"책 이름 : {book['name']}")
+        self.no_return_date_label.setText(f"대여 날짜 : {data['createdAt']}")
+        self.no_return_user_label.setText(f"대여자 : {user['name']}")
  
 
 if __name__ == "__main__":

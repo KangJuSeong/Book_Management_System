@@ -58,4 +58,7 @@ class RentalService(
             false
         }
     }
+
+    fun search(keyword: String): List<RentalResDto> =
+        rentalRepository.findRentals(keyword).map {it.toResDto()}
 }
